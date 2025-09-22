@@ -8,7 +8,7 @@ def new(original, max_cols):
 
     try:
         _fd = original.fileno()
-    except OSError:
+    except (AttributeError, OSError):
         _fd = 1
 
     def cols():
