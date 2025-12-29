@@ -21,9 +21,15 @@
     "dev": "bun run tsc --watch",
     "demo": "bun run dist/demo.js",
     "test": "bun test",
+    "test:coverage": "bun test --coverage",
+    "typecheck": "bun run tsc --noEmit",
     "lint": "bun tsc --noEmit && bun x ultracite check",
     "lint:fix": "bun x ultracite fix",
-    "prepublishOnly": "bun run build"
+    "prepublishOnly": "bun run build",
+    "prepare": "husky"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "keywords": [
     "progress",
@@ -36,12 +42,14 @@
     "alive",
     "beautiful"
   ],
-  "author": "peacockery-studio",
+  "author": "Chi Kingsley",
   "license": "MIT",
   "devDependencies": {
     "@biomejs/biome": "2.3.10",
     "@types/bun": "latest",
     "@types/node": "^20.10.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "typescript": "^5.3.0",
     "ultracite": "6.5.0"
   },
@@ -50,5 +58,10 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [
+      "bun x ultracite fix"
+    ]
+  }
 }

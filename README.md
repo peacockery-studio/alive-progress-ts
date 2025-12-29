@@ -1,5 +1,11 @@
 # alive-progress
 
+[![npm version](https://img.shields.io/npm/v/alive-progress.svg)](https://www.npmjs.com/package/alive-progress)
+[![npm downloads](https://img.shields.io/npm/dm/alive-progress.svg)](https://www.npmjs.com/package/alive-progress)
+[![CI](https://github.com/peacockery-studio/alive-progress-ts/actions/workflows/ci.yml/badge.svg)](https://github.com/peacockery-studio/alive-progress-ts/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/peacockery-studio/alive-progress-ts/branch/main/graph/badge.svg)](https://codecov.io/gh/peacockery-studio/alive-progress-ts)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A beautiful, animated progress bar for TypeScript/Node.js CLI applications.
 
 This is a TypeScript port of the popular Python [alive-progress](https://github.com/rsalmei/alive-progress) library.
