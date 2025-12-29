@@ -474,47 +474,81 @@ export function aliveBar(
     process.on('SIGINT', sigintHandler);
   }
 
-  // Create the progress bar handler
-  const bar: ProgressBar = Object.assign(
-    (count: number = 1, opts: { skipped?: boolean } = {}) => {
-      if (!state.isRunning) return;
+  // Create the progress bar handler as a callable function with properties
+  const barFn = (count: number = 1, opts: { skipped?: boolean } = {}) => {
+    if (!state.isRunning) return;
 
-      if (opts.skipped) {
-        state.skipped += count;
-      }
+    if (opts.skipped) {
+      state.skipped += count;
+    }
 
-      if (config.manual) {
-        // Manual mode: count is the percentage (0-1)
-        state.current = count * (state.total || 100);
-      } else {
-        state.current += count;
-      }
+    if (config.manual) {
+      // Manual mode: count is the percentage (0-1)
+      state.current = count * (state.total || 100);
+    } else {
+      state.current += count;
+    }
 
-      updatePosition(state.current);
+    updatePosition(state.current);
+  };
+
+  // Define properties on the function using Object.defineProperties
+  Object.defineProperties(barFn, {
+    current: {
+      get() { return state.current - state.skipped; },
+      enumerable: true
     },
-    {
-      get current() {
-        return state.current - state.skipped;
+    text: {
+      get() { return state.text; },
+      set(value: string) { state.text = value; },
+      enumerable: true
+    },
+    title: {
+      get() { return state.title; },
+      set(value: string) { state.title = value; },
+      enumerable: true
+    },
+    elapsed: {
+      get() { return state.timer.elapsed(); },
+      enumerable: true
+    },
+    monitor: {
+      get() {
+        const actualCurrent = state.current - state.skipped;
+        const percent = state.total ? Math.min(100, (actualCurrent / state.total) * 100) : 0;
+        const countStr = formatNumber(actualCurrent, config.scale, config.precision, config.unit);
+        const totalStr = state.total ? formatNumber(state.total, config.scale, config.precision, config.unit) : '?';
+        return `${countStr}/${totalStr} [${percent.toFixed(0)}%]`;
       },
-      get text() {
-        return state.text;
+      enumerable: true
+    },
+    rate: {
+      get() { return formatRate(state.etaCalculator.getRate(), config.unit); },
+      enumerable: true
+    },
+    eta: {
+      get() {
+        const actualCurrent = state.current - state.skipped;
+        if (!state.total) return '?';
+        const eta = state.etaCalculator.update(actualCurrent, state.total);
+        return isFinite(eta) ? formatDuration(eta, true) : '?';
       },
-      set text(value: string) {
-        state.text = value;
-      },
-      setText(value: string) {
-        state.text = value;
-      },
-      get title() {
-        return state.title;
-      },
-      set title(value: string) {
-        state.title = value;
-      },
-      setTitle(value: string) {
-        state.title = value;
-      },
-      pause() {
+      enumerable: true
+    },
+    receipt: {
+      get() { return state.receipt; },
+      enumerable: true
+    },
+    setText: {
+      value(value: string) { state.text = value; },
+      enumerable: true
+    },
+    setTitle: {
+      value(value: string) { state.title = value; },
+      enumerable: true
+    },
+    pause: {
+      value() {
         state.isPaused = true;
         state.timer.pause();
         state.terminal.clearLine();
@@ -527,30 +561,11 @@ export function aliveBar(
           updateDisplay(state);
         };
       },
-      get elapsed() {
-        return state.timer.elapsed();
-      },
-      get monitor() {
-        const actualCurrent = state.current - state.skipped;
-        const percent = state.total ? Math.min(100, (actualCurrent / state.total) * 100) : 0;
-        const countStr = formatNumber(actualCurrent, config.scale, config.precision, config.unit);
-        const totalStr = state.total ? formatNumber(state.total, config.scale, config.precision, config.unit) : '?';
-        return `${countStr}/${totalStr} [${percent.toFixed(0)}%]`;
-      },
-      get rate() {
-        return formatRate(state.etaCalculator.getRate(), config.unit);
-      },
-      get eta() {
-        const actualCurrent = state.current - state.skipped;
-        if (!state.total) return '?';
-        const eta = state.etaCalculator.update(actualCurrent, state.total);
-        return isFinite(eta) ? formatDuration(eta, true) : '?';
-      },
-      get receipt() {
-        return state.receipt;
-      }
+      enumerable: true
     }
-  );
+  });
+
+  const bar = barFn as ProgressBar;
 
   const done = (): Receipt => {
     if (sigintHandler) {
