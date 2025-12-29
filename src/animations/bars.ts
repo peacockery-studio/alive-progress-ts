@@ -4,8 +4,6 @@
  * Bars show the actual progress as a filled/unfilled visual.
  */
 
-import { toCells, getCellsWidth, cellsToString, type Cell } from '../utils/cells.js';
-
 /**
  * A rendered bar frame ready for display.
  */
@@ -17,7 +15,11 @@ export interface BarFrame {
 /**
  * A bar renderer function that creates a bar at a specific percentage.
  */
-export type Bar = (percent: number, overflow?: boolean, underflow?: boolean) => BarFrame;
+export type Bar = (
+  percent: number,
+  overflow?: boolean,
+  underflow?: boolean
+) => BarFrame;
 
 /**
  * A bar factory creates a bar renderer with a specific length.
@@ -41,11 +43,11 @@ export interface BarOptions {
 }
 
 const DEFAULT_OPTIONS: Required<BarOptions> = {
-  chars: '█',
-  tip: '',
-  background: ' ',
-  borders: ['|', '|'],
-  errors: ['⚠', '✗']
+  chars: "█",
+  tip: "",
+  background: " ",
+  borders: ["|", "|"],
+  errors: ["⚠", "✗"],
 };
 
 /**
@@ -68,27 +70,28 @@ export function barFactory(options: BarOptions = {}): BarFactory {
   const opts = { ...DEFAULT_OPTIONS, ...options };
 
   return (length: number): Bar => {
-    const borderLeft = opts.borders ? opts.borders[0] : '';
-    const borderRight = opts.borders ? opts.borders[1] : '';
+    const borderLeft = opts.borders ? opts.borders[0] : "";
+    const borderRight = opts.borders ? opts.borders[1] : "";
     const borderWidth = borderLeft.length + borderRight.length;
     const innerLength = length - borderWidth;
 
     // Parse fill characters (gradient from empty to full)
     const fillChars = [...opts.chars];
     const hasGradient = fillChars.length > 1;
+    // fillChars always has at least one char due to DEFAULT_OPTIONS
     const fullChar = fillChars[fillChars.length - 1];
     const bgChar = opts.background;
     const tipChars = opts.tip ? [...opts.tip] : [];
     const tipWidth = tipChars.length;
 
-    return (percent: number, overflow: boolean = false, underflow: boolean = false): BarFrame => {
+    return (percent: number, overflow = false, underflow = false): BarFrame => {
       // Clamp percent to 0-1 for display
       const clampedPercent = Math.max(0, Math.min(1, percent));
       const fillWidth = clampedPercent * innerLength;
       const fullCells = Math.floor(fillWidth);
       const partialFill = fillWidth - fullCells;
 
-      let content = '';
+      let content = "";
 
       // Add left border
       content += borderLeft;
@@ -107,7 +110,7 @@ export function barFactory(options: BarOptions = {}): BarFactory {
         barCells.push(fillChars[gradientIndex]);
       } else if (tipWidth > 0 && fullCells < innerLength && fullCells > 0) {
         // Show tip at the progress edge
-        barCells.pop();  // Remove last full cell
+        barCells.pop(); // Remove last full cell
         for (const tipChar of tipChars) {
           if (barCells.length < innerLength) {
             barCells.push(tipChar);
@@ -120,7 +123,7 @@ export function barFactory(options: BarOptions = {}): BarFactory {
         barCells.push(bgChar);
       }
 
-      content += barCells.slice(0, innerLength).join('');
+      content += barCells.slice(0, innerLength).join("");
 
       // Add right border with error indicators
       if (overflow) {
@@ -133,7 +136,7 @@ export function barFactory(options: BarOptions = {}): BarFactory {
 
       return {
         content,
-        width: length
+        width: length,
       };
     };
   };
@@ -144,9 +147,9 @@ export function barFactory(options: BarOptions = {}): BarFactory {
  */
 export function smoothBar(): BarFactory {
   return barFactory({
-    chars: '▏▎▍▌▋▊▉█',
-    background: ' ',
-    borders: ['|', '|']
+    chars: "▏▎▍▌▋▊▉█",
+    background: " ",
+    borders: ["|", "|"],
   });
 }
 
@@ -155,9 +158,9 @@ export function smoothBar(): BarFactory {
  */
 export function classicBar(): BarFactory {
   return barFactory({
-    chars: '#',
-    background: '-',
-    borders: ['[', ']']
+    chars: "#",
+    background: "-",
+    borders: ["[", "]"],
   });
 }
 
@@ -166,9 +169,9 @@ export function classicBar(): BarFactory {
  */
 export function blocksBar(): BarFactory {
   return barFactory({
-    chars: '░▒▓█',
-    background: ' ',
-    borders: ['│', '│']
+    chars: "░▒▓█",
+    background: " ",
+    borders: ["│", "│"],
   });
 }
 
@@ -177,9 +180,9 @@ export function blocksBar(): BarFactory {
  */
 export function bubblesBar(): BarFactory {
   return barFactory({
-    chars: '∙○⦿●',
-    background: ' ',
-    borders: ['<', '>']
+    chars: "∙○⦿●",
+    background: " ",
+    borders: ["<", ">"],
   });
 }
 
@@ -188,10 +191,10 @@ export function bubblesBar(): BarFactory {
  */
 export function fishBar(): BarFactory {
   return barFactory({
-    chars: '░',
-    tip: '><>',
-    background: '~',
-    borders: ['|', '|']
+    chars: "░",
+    tip: "><>",
+    background: "~",
+    borders: ["|", "|"],
   });
 }
 
@@ -200,23 +203,23 @@ export function fishBar(): BarFactory {
  */
 export function halloweenBar(): BarFactory {
   return barFactory({
-    chars: '█',
-    tip: '🎃',
-    background: ' ',
-    borders: ['🦇', '🦇'],
-    errors: ['😱', '🗡']
+    chars: "█",
+    tip: "🎃",
+    background: " ",
+    borders: ["🦇", "🦇"],
+    errors: ["😱", "🗡"],
   });
 }
 
 /**
  * Create a bar with no visible characters (tip only).
  */
-export function tipOnlyBar(tip: string = '>'): BarFactory {
+export function tipOnlyBar(tip = ">"): BarFactory {
   return barFactory({
-    chars: ' ',
+    chars: " ",
     tip,
-    background: '·',
-    borders: ['[', ']']
+    background: "·",
+    borders: ["[", "]"],
   });
 }
 
@@ -225,9 +228,9 @@ export function tipOnlyBar(tip: string = '>'): BarFactory {
  */
 export function arrowBar(): BarFactory {
   return barFactory({
-    chars: '=',
-    tip: '>',
-    background: ' ',
-    borders: ['[', ']']
+    chars: "=",
+    tip: ">",
+    background: " ",
+    borders: ["[", "]"],
   });
 }

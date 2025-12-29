@@ -6,20 +6,32 @@
  * - aliveIt(): Auto-iterating progress wrapper
  */
 
-import { createTerminal, type TerminalWriter } from '../utils/terminal/index.js';
-import { Timer, ETACalculator, formatDuration, formatRate } from '../utils/timing.js';
-import { calculateRefreshInterval, getFixedInterval } from './calibration.js';
-import { resolveConfig, type AliveBarOptions, type ResolvedConfig } from './configuration.js';
+import type { Bar } from "../animations/bars.js";
+import type { Spinner } from "../animations/spinners.js";
+import { getStringWidth } from "../utils/cells.js";
+import {
+  createTerminal,
+  type TerminalWriter,
+} from "../utils/terminal/index.js";
+import {
+  ETACalculator,
+  formatDuration,
+  formatRate,
+  Timer,
+} from "../utils/timing.js";
+import { calculateRefreshInterval, getFixedInterval } from "./calibration.js";
+import {
+  type AliveBarOptions,
+  type ResolvedConfig,
+  resolveConfig,
+} from "./configuration.js";
 import {
   installHooks,
+  pauseHooks,
+  resumeHooks,
   uninstallHooks,
   updatePosition,
-  pauseHooks,
-  resumeHooks
-} from './hookManager.js';
-import type { Spinner, SpinnerFrame } from '../animations/spinners.js';
-import type { Bar, BarFrame } from '../animations/bars.js';
-import { getStringWidth } from '../utils/cells.js';
+} from "./hook-manager.js";
 
 /**
  * Receipt data returned after progress completion.
@@ -103,18 +115,21 @@ interface ProgressState {
  */
 function formatNumber(
   value: number,
-  scale: 'SI' | 'IEC' | 'SI2' | null,
+  scale: "SI" | "IEC" | "SI2" | null,
   precision: number,
   unit: string
 ): string {
   if (!scale) {
-    const formatted = Number.isInteger(value) ? value.toString() : value.toFixed(precision);
+    const formatted = Number.isInteger(value)
+      ? value.toString()
+      : value.toFixed(precision);
     return unit ? `${formatted}${unit}` : formatted;
   }
 
-  const scales = scale === 'IEC'
-    ? { factor: 1024, suffixes: ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi'] }
-    : { factor: 1000, suffixes: ['', 'k', 'M', 'G', 'T', 'P'] };
+  const scales =
+    scale === "IEC"
+      ? { factor: 1024, suffixes: ["", "Ki", "Mi", "Gi", "Ti", "Pi"] }
+      : { factor: 1000, suffixes: ["", "k", "M", "G", "T", "P"] };
 
   let scaled = value;
   let suffixIndex = 0;
@@ -140,17 +155,32 @@ function buildWidgets(state: ProgressState): string {
     const actualCurrent = current - skipped;
     const percent = total ? Math.min(100, (actualCurrent / total) * 100) : 0;
 
-    if (typeof config.monitor === 'string') {
+    if (typeof config.monitor === "string") {
       // Custom format
       let format = config.monitor;
-      format = format.replace('{count}', formatNumber(actualCurrent, config.scale, config.precision, config.unit));
-      format = format.replace('{total}', total ? formatNumber(total, config.scale, config.precision, config.unit) : '?');
-      format = format.replace('{percent}', `${percent.toFixed(0)}%`);
+      format = format.replace(
+        "{count}",
+        formatNumber(actualCurrent, config.scale, config.precision, config.unit)
+      );
+      format = format.replace(
+        "{total}",
+        total
+          ? formatNumber(total, config.scale, config.precision, config.unit)
+          : "?"
+      );
+      format = format.replace("{percent}", `${percent.toFixed(0)}%`);
       parts.push(format);
     } else {
       // Default format
-      const countStr = formatNumber(actualCurrent, config.scale, config.precision, config.unit);
-      const totalStr = total ? formatNumber(total, config.scale, config.precision, config.unit) : '?';
+      const countStr = formatNumber(
+        actualCurrent,
+        config.scale,
+        config.precision,
+        config.unit
+      );
+      const totalStr = total
+        ? formatNumber(total, config.scale, config.precision, config.unit)
+        : "?";
       parts.push(`${countStr}/${totalStr} [${percent.toFixed(0)}%]`);
     }
   }
@@ -158,8 +188,8 @@ function buildWidgets(state: ProgressState): string {
   // Elapsed widget
   if (config.elapsed) {
     const elapsed = timer.elapsed();
-    if (typeof config.elapsed === 'string') {
-      parts.push(config.elapsed.replace('{elapsed}', formatDuration(elapsed)));
+    if (typeof config.elapsed === "string") {
+      parts.push(config.elapsed.replace("{elapsed}", formatDuration(elapsed)));
     } else {
       parts.push(`in ${formatDuration(elapsed)}`);
     }
@@ -168,28 +198,45 @@ function buildWidgets(state: ProgressState): string {
   // Stats widget: rate and ETA
   if (config.stats && total) {
     const rate = etaCalculator.getRate();
-    const eta = total ? etaCalculator.update(current - skipped, total) : Infinity;
+    const eta = total
+      ? etaCalculator.update(current - skipped, total)
+      : Number.POSITIVE_INFINITY;
 
-    if (typeof config.stats === 'string') {
+    if (typeof config.stats === "string") {
       let format = config.stats;
-      format = format.replace('{rate}', formatRate(rate, config.unit));
-      format = format.replace('{eta}', isFinite(eta) ? formatDuration(eta, true) : '?');
+      format = format.replace("{rate}", formatRate(rate, config.unit));
+      format = format.replace(
+        "{eta}",
+        Number.isFinite(eta) ? formatDuration(eta, true) : "?"
+      );
       parts.push(format);
     } else {
       const rateStr = formatRate(rate, config.unit);
-      const etaStr = isFinite(eta) ? `eta: ${formatDuration(eta, true)}` : '';
-      parts.push(`(${rateStr}${etaStr ? ', ' + etaStr : ''})`);
+      const etaStr = Number.isFinite(eta)
+        ? `eta: ${formatDuration(eta, true)}`
+        : "";
+      parts.push(`(${rateStr}${etaStr ? `, ${etaStr}` : ""})`);
     }
   }
 
-  return parts.join(' ');
+  return parts.join(" ");
 }
 
 /**
  * Render a single frame of the progress bar.
  */
 function renderFrame(state: ProgressState): string {
-  const { config, total, current, text, title, spinner, bar, unknownSpinner, skipped } = state;
+  const {
+    config,
+    total,
+    current,
+    text,
+    title,
+    spinner,
+    bar,
+    unknownSpinner,
+    skipped,
+  } = state;
   const parts: string[] = [];
 
   // Title
@@ -202,7 +249,7 @@ function renderFrame(state: ProgressState): string {
   const actualCurrent = current - skipped;
   const percent = total ? Math.min(1, actualCurrent / total) : 0;
   const overflow = total ? actualCurrent > total : false;
-  const underflow = false;  // Will be set at completion
+  const underflow = false; // Will be set at completion
 
   if (total !== null) {
     // Determinate mode: show progress bar
@@ -231,17 +278,17 @@ function renderFrame(state: ProgressState): string {
     parts.push(text);
   }
 
-  let line = parts.join(' ');
+  let line = parts.join(" ");
 
   // Truncate if too long
   const lineWidth = getStringWidth(line);
   if (lineWidth > termWidth) {
-    line = line.slice(0, termWidth - 3) + '...';
+    line = `${line.slice(0, termWidth - 3)}...`;
   }
 
   // Dual line mode
   if (config.dualLine && text) {
-    line += '\n' + text;
+    line += `\n${text}`;
   }
 
   return line;
@@ -251,7 +298,9 @@ function renderFrame(state: ProgressState): string {
  * Print a line while preserving the progress bar.
  */
 function printLine(state: ProgressState, text: string): void {
-  if (!state.isRunning) return;
+  if (!state.isRunning) {
+    return;
+  }
 
   pauseHooks();
 
@@ -271,7 +320,9 @@ function printLine(state: ProgressState, text: string): void {
  * Update the display.
  */
 function updateDisplay(state: ProgressState): void {
-  if (!state.isRunning || state.isPaused) return;
+  if (!state.isRunning || state.isPaused) {
+    return;
+  }
 
   pauseHooks();
 
@@ -291,13 +342,16 @@ function startRefreshLoop(state: ProgressState): void {
   const fixedInterval = getFixedInterval(state.config.refreshSecs);
 
   const refresh = () => {
-    if (!state.isRunning || state.isPaused) return;
+    if (!state.isRunning || state.isPaused) {
+      return;
+    }
 
     updateDisplay(state);
 
     // Calculate next interval based on current rate
     const rate = state.etaCalculator.getRate();
-    const interval = fixedInterval ?? calculateRefreshInterval(rate, state.config.calibrate);
+    const interval =
+      fixedInterval ?? calculateRefreshInterval(rate, state.config.calibrate);
 
     state.refreshInterval = setTimeout(refresh, interval);
   };
@@ -329,7 +383,7 @@ function finalize(state: ProgressState): void {
   const actualCurrent = state.current - state.skipped;
   const overflow = state.total !== null && actualCurrent > state.total;
   const underflow = state.total !== null && actualCurrent < state.total;
-  const success = !overflow && !underflow;
+  const success = !(overflow || underflow);
   const elapsed = state.timer.elapsed();
   const rate = elapsed > 0 ? actualCurrent / elapsed : 0;
 
@@ -341,7 +395,7 @@ function finalize(state: ProgressState): void {
     rate,
     success,
     overflow,
-    underflow
+    underflow,
   };
 
   // Show final receipt
@@ -360,11 +414,23 @@ function finalize(state: ProgressState): void {
     parts.push(barFrame.content);
 
     // Final stats
-    const countStr = formatNumber(actualCurrent, state.config.scale, state.config.precision, state.config.unit);
+    const countStr = formatNumber(
+      actualCurrent,
+      state.config.scale,
+      state.config.precision,
+      state.config.unit
+    );
     const totalStr = state.total
-      ? formatNumber(state.total, state.config.scale, state.config.precision, state.config.unit)
-      : '?';
-    const percentStr = state.total ? `${Math.round((actualCurrent / state.total) * 100)}%` : '100%';
+      ? formatNumber(
+          state.total,
+          state.config.scale,
+          state.config.precision,
+          state.config.unit
+        )
+      : "?";
+    const percentStr = state.total
+      ? `${Math.round((actualCurrent / state.total) * 100)}%`
+      : "100%";
     parts.push(`${countStr}/${totalStr} [${percentStr}]`);
 
     // Elapsed
@@ -375,11 +441,11 @@ function finalize(state: ProgressState): void {
 
     // Success/failure indicator
     if (overflow) {
-      parts.push('✗');
+      parts.push("✗");
     } else if (underflow) {
-      parts.push('⚠');
+      parts.push("⚠");
     } else {
-      parts.push('✓');
+      parts.push("✓");
     }
 
     // Optional text
@@ -388,7 +454,7 @@ function finalize(state: ProgressState): void {
     }
 
     state.terminal.clearLine();
-    state.terminal.writeLine(parts.join(' '));
+    state.terminal.writeLine(parts.join(" "));
     state.terminal.showCursor();
 
     resumeHooks();
@@ -429,12 +495,12 @@ export function aliveBar(
     config,
     total,
     current: 0,
-    text: '',
+    text: "",
     title: config.title,
     terminal: createTerminal({
       stream: config.file,
       forceTty: config.forceTty,
-      disable: config.disable
+      disable: config.disable,
     }),
     spinner: config.spinner(config.length),
     bar: config.bar(config.length),
@@ -444,10 +510,10 @@ export function aliveBar(
     refreshInterval: null,
     isRunning: true,
     isPaused: false,
-    lastFrame: '',
+    lastFrame: "",
     receipt: null,
     skipped: 0,
-    printBuffer: []
+    printBuffer: [],
   };
 
   // Install hooks for console interception
@@ -455,7 +521,7 @@ export function aliveBar(
     installHooks({
       enrichPrint: config.enrichPrint,
       enrichOffset: config.enrichOffset,
-      printFn: (text: string) => printLine(state, text)
+      printFn: (text: string) => printLine(state, text),
     });
   }
 
@@ -471,12 +537,14 @@ export function aliveBar(
       finalize(state);
       process.exit(130);
     };
-    process.on('SIGINT', sigintHandler);
+    process.on("SIGINT", sigintHandler);
   }
 
   // Create the progress bar handler as a callable function with properties
-  const barFn = (count: number = 1, opts: { skipped?: boolean } = {}) => {
-    if (!state.isRunning) return;
+  const barFn = (count = 1, opts: { skipped?: boolean } = {}) => {
+    if (!state.isRunning) {
+      return;
+    }
 
     if (opts.skipped) {
       state.skipped += count;
@@ -495,57 +563,93 @@ export function aliveBar(
   // Define properties on the function using Object.defineProperties
   Object.defineProperties(barFn, {
     current: {
-      get() { return state.current - state.skipped; },
-      enumerable: true
+      get() {
+        return state.current - state.skipped;
+      },
+      enumerable: true,
     },
     text: {
-      get() { return state.text; },
-      set(value: string) { state.text = value; },
-      enumerable: true
+      get() {
+        return state.text;
+      },
+      set(value: string) {
+        state.text = value;
+      },
+      enumerable: true,
     },
     title: {
-      get() { return state.title; },
-      set(value: string) { state.title = value; },
-      enumerable: true
+      get() {
+        return state.title;
+      },
+      set(value: string) {
+        state.title = value;
+      },
+      enumerable: true,
     },
     elapsed: {
-      get() { return state.timer.elapsed(); },
-      enumerable: true
+      get() {
+        return state.timer.elapsed();
+      },
+      enumerable: true,
     },
     monitor: {
       get() {
         const actualCurrent = state.current - state.skipped;
-        const percent = state.total ? Math.min(100, (actualCurrent / state.total) * 100) : 0;
-        const countStr = formatNumber(actualCurrent, config.scale, config.precision, config.unit);
-        const totalStr = state.total ? formatNumber(state.total, config.scale, config.precision, config.unit) : '?';
+        const percent = state.total
+          ? Math.min(100, (actualCurrent / state.total) * 100)
+          : 0;
+        const countStr = formatNumber(
+          actualCurrent,
+          config.scale,
+          config.precision,
+          config.unit
+        );
+        const totalStr = state.total
+          ? formatNumber(
+              state.total,
+              config.scale,
+              config.precision,
+              config.unit
+            )
+          : "?";
         return `${countStr}/${totalStr} [${percent.toFixed(0)}%]`;
       },
-      enumerable: true
+      enumerable: true,
     },
     rate: {
-      get() { return formatRate(state.etaCalculator.getRate(), config.unit); },
-      enumerable: true
+      get() {
+        return formatRate(state.etaCalculator.getRate(), config.unit);
+      },
+      enumerable: true,
     },
     eta: {
       get() {
         const actualCurrent = state.current - state.skipped;
-        if (!state.total) return '?';
+        if (!state.total) {
+          return "?";
+        }
         const eta = state.etaCalculator.update(actualCurrent, state.total);
-        return isFinite(eta) ? formatDuration(eta, true) : '?';
+        return Number.isFinite(eta) ? formatDuration(eta, true) : "?";
       },
-      enumerable: true
+      enumerable: true,
     },
     receipt: {
-      get() { return state.receipt; },
-      enumerable: true
+      get() {
+        return state.receipt;
+      },
+      enumerable: true,
     },
     setText: {
-      value(value: string) { state.text = value; },
-      enumerable: true
+      value(value: string) {
+        state.text = value;
+      },
+      enumerable: true,
     },
     setTitle: {
-      value(value: string) { state.title = value; },
-      enumerable: true
+      value(value: string) {
+        state.title = value;
+      },
+      enumerable: true,
     },
     pause: {
       value() {
@@ -561,18 +665,19 @@ export function aliveBar(
           updateDisplay(state);
         };
       },
-      enumerable: true
-    }
+      enumerable: true,
+    },
   });
 
   const bar = barFn as ProgressBar;
 
   const done = (): Receipt => {
     if (sigintHandler) {
-      process.off('SIGINT', sigintHandler);
+      process.off("SIGINT", sigintHandler);
     }
     finalize(state);
-    return state.receipt!;
+    // Receipt is guaranteed to be set after finalize()
+    return state.receipt as Receipt;
   };
 
   return { bar, done };
@@ -600,9 +705,15 @@ export async function* aliveIt<T>(
   let total: number | null = null;
   if (Array.isArray(iterable)) {
     total = iterable.length;
-  } else if ('length' in iterable && typeof (iterable as { length: number }).length === 'number') {
+  } else if (
+    "length" in iterable &&
+    typeof (iterable as { length: number }).length === "number"
+  ) {
     total = (iterable as { length: number }).length;
-  } else if ('size' in iterable && typeof (iterable as { size: number }).size === 'number') {
+  } else if (
+    "size" in iterable &&
+    typeof (iterable as { size: number }).size === "number"
+  ) {
     total = (iterable as { size: number }).size;
   }
 
@@ -636,9 +747,15 @@ export function* aliveItSync<T>(
   let total: number | null = null;
   if (Array.isArray(iterable)) {
     total = iterable.length;
-  } else if ('length' in iterable && typeof (iterable as { length: number }).length === 'number') {
+  } else if (
+    "length" in iterable &&
+    typeof (iterable as { length: number }).length === "number"
+  ) {
     total = (iterable as { length: number }).length;
-  } else if ('size' in iterable && typeof (iterable as { size: number }).size === 'number') {
+  } else if (
+    "size" in iterable &&
+    typeof (iterable as { size: number }).size === "number"
+  ) {
     total = (iterable as { size: number }).size;
   }
 

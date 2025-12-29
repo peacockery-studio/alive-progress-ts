@@ -3,25 +3,23 @@
  */
 
 import {
-  frameSpinner,
-  scrollingSpinner,
-  bouncingSpinner,
-  pulsingSpinner,
-  delayedSpinner,
-  type SpinnerFactory
-} from '../animations/spinners.js';
-
-import {
+  arrowBar,
+  type BarFactory,
   barFactory,
-  smoothBar,
-  classicBar,
   blocksBar,
   bubblesBar,
+  classicBar,
   fishBar,
   halloweenBar,
-  arrowBar,
-  type BarFactory
-} from '../animations/bars.js';
+  smoothBar,
+} from "../animations/bars.js";
+import {
+  bouncingSpinner,
+  frameSpinner,
+  pulsingSpinner,
+  type SpinnerFactory,
+  scrollingSpinner,
+} from "../animations/spinners.js";
 
 // ============================================
 // BUILT-IN SPINNERS
@@ -29,116 +27,210 @@ import {
 
 export const spinners: Record<string, SpinnerFactory> = {
   // Classic spinners
-  classic: frameSpinner('|/-\\'),
-  dots: frameSpinner(['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']),
-  dots2: frameSpinner(['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷']),
-  dots3: frameSpinner(['⠁', '⠂', '⠄', '⡀', '⢀', '⠠', '⠐', '⠈']),
-  line: frameSpinner(['-', '\\', '|', '/']),
-  line2: frameSpinner(['⠂', '-', '–', '—', '–', '-']),
+  classic: frameSpinner("|/-\\"),
+  dots: frameSpinner(["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]),
+  dots2: frameSpinner(["⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷"]),
+  dots3: frameSpinner(["⠁", "⠂", "⠄", "⡀", "⢀", "⠠", "⠐", "⠈"]),
+  line: frameSpinner(["-", "\\", "|", "/"]),
+  line2: frameSpinner(["⠂", "-", "–", "—", "–", "-"]),
 
   // Bouncing
-  bounce: bouncingSpinner('●'),
-  bounce2: frameSpinner(['◐', '◓', '◑', '◒']),
+  bounce: bouncingSpinner("●"),
+  bounce2: frameSpinner(["◐", "◓", "◑", "◒"]),
 
   // Arrows
-  arrows: frameSpinner(['←', '↖', '↑', '↗', '→', '↘', '↓', '↙']),
-  arrows2: frameSpinner(['⬆️ ', '↗️ ', '➡️ ', '↘️ ', '⬇️ ', '↙️ ', '⬅️ ', '↖️ ']),
+  arrows: frameSpinner(["←", "↖", "↑", "↗", "→", "↘", "↓", "↙"]),
+  arrows2: frameSpinner(["⬆️ ", "↗️ ", "➡️ ", "↘️ ", "⬇️ ", "↙️ ", "⬅️ ", "↖️ "]),
 
   // Shapes
-  circle: frameSpinner(['◜', '◠', '◝', '◞', '◡', '◟']),
-  square: frameSpinner(['◰', '◳', '◲', '◱']),
-  triangle: frameSpinner(['◢', '◣', '◤', '◥']),
+  circle: frameSpinner(["◜", "◠", "◝", "◞", "◡", "◟"]),
+  square: frameSpinner(["◰", "◳", "◲", "◱"]),
+  triangle: frameSpinner(["◢", "◣", "◤", "◥"]),
 
   // Growing/shrinking
-  grow: frameSpinner(['▁', '▃', '▄', '▅', '▆', '▇', '█', '▇', '▆', '▅', '▄', '▃']),
-  growHorizontal: frameSpinner(['▏', '▎', '▍', '▌', '▋', '▊', '▉', '█', '▉', '▊', '▋', '▌', '▍', '▎']),
+  grow: frameSpinner([
+    "▁",
+    "▃",
+    "▄",
+    "▅",
+    "▆",
+    "▇",
+    "█",
+    "▇",
+    "▆",
+    "▅",
+    "▄",
+    "▃",
+  ]),
+  growHorizontal: frameSpinner([
+    "▏",
+    "▎",
+    "▍",
+    "▌",
+    "▋",
+    "▊",
+    "▉",
+    "█",
+    "▉",
+    "▊",
+    "▋",
+    "▌",
+    "▍",
+    "▎",
+  ]),
 
   // Pulse
-  pulse: pulsingSpinner(['○', '◎', '●', '◉']),
-  pulse2: pulsingSpinner(['.', 'o', 'O', '°', 'O', 'o']),
+  pulse: pulsingSpinner(["○", "◎", "●", "◉"]),
+  pulse2: pulsingSpinner([".", "o", "O", "°", "O", "o"]),
 
   // Stars
-  star: frameSpinner(['✶', '✸', '✹', '✺', '✹', '✸']),
-  star2: frameSpinner(['★', '☆']),
+  star: frameSpinner(["✶", "✸", "✹", "✺", "✹", "✸"]),
+  star2: frameSpinner(["★", "☆"]),
 
   // Flip
-  flip: frameSpinner(['_', '_', '_', '-', '`', '`', '\'', '´', '-', '_', '_', '_']),
+  flip: frameSpinner([
+    "_",
+    "_",
+    "_",
+    "-",
+    "`",
+    "`",
+    "'",
+    "´",
+    "-",
+    "_",
+    "_",
+    "_",
+  ]),
 
   // Scrolling
-  waves: scrollingSpinner('≈≈≈', { background: ' ' }),
-  waves2: scrollingSpinner('～～', { background: ' ' }),
+  waves: scrollingSpinner("≈≈≈", { background: " " }),
+  waves2: scrollingSpinner("～～", { background: " " }),
 
   // Box animations
-  boxBounce: frameSpinner(['▖', '▘', '▝', '▗']),
-  boxBounce2: frameSpinner(['▌', '▀', '▐', '▄']),
+  boxBounce: frameSpinner(["▖", "▘", "▝", "▗"]),
+  boxBounce2: frameSpinner(["▌", "▀", "▐", "▄"]),
 
   // Clock
-  clock: frameSpinner(['🕐', '🕑', '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚', '🕛']),
+  clock: frameSpinner([
+    "🕐",
+    "🕑",
+    "🕒",
+    "🕓",
+    "🕔",
+    "🕕",
+    "🕖",
+    "🕗",
+    "🕘",
+    "🕙",
+    "🕚",
+    "🕛",
+  ]),
 
   // Moon phases
-  moon: frameSpinner(['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘']),
+  moon: frameSpinner(["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"]),
 
   // Earth
-  earth: frameSpinner(['🌍', '🌎', '🌏']),
+  earth: frameSpinner(["🌍", "🌎", "🌏"]),
 
   // Hearts
-  hearts: frameSpinner(['💛', '💙', '💜', '💚', '❤️ ']),
+  hearts: frameSpinner(["💛", "💙", "💜", "💚", "❤️ "]),
 
   // Weather
-  weather: frameSpinner(['☀️ ', '☀️ ', '☀️ ', '🌤 ', '⛅', '🌥 ', '☁️ ', '🌧 ', '🌨 ', '🌧 ', '🌥 ', '⛅', '🌤 ']),
+  weather: frameSpinner([
+    "☀️ ",
+    "☀️ ",
+    "☀️ ",
+    "🌤 ",
+    "⛅",
+    "🌥 ",
+    "☁️ ",
+    "🌧 ",
+    "🌨 ",
+    "🌧 ",
+    "🌥 ",
+    "⛅",
+    "🌤 ",
+  ]),
 
   // Monkey
-  monkey: frameSpinner(['🙈', '🙈', '🙉', '🙊']),
+  monkey: frameSpinner(["🙈", "🙈", "🙉", "🙊"]),
 
   // Aesthetic
-  aesthetic: scrollingSpinner('▰▰▰', { background: '▱' }),
+  aesthetic: scrollingSpinner("▰▰▰", { background: "▱" }),
 
   // Point
-  point: frameSpinner(['∙∙∙', '●∙∙', '∙●∙', '∙∙●', '∙∙∙']),
+  point: frameSpinner(["∙∙∙", "●∙∙", "∙●∙", "∙∙●", "∙∙∙"]),
 
   // Layer
-  layer: frameSpinner(['—', '=', '≡', '=']),
+  layer: frameSpinner(["—", "=", "≡", "="]),
 
   // Breathing
-  breathing: pulsingSpinner(['  ∙  ', ' ∙∙∙ ', '∙∙∙∙∙', ' ∙∙∙ '], 3),
+  breathing: pulsingSpinner(["  ∙  ", " ∙∙∙ ", "∙∙∙∙∙", " ∙∙∙ "], 3),
 
   // Toggle
-  toggle: frameSpinner(['⊶', '⊷']),
-  toggle2: frameSpinner(['▫', '▪']),
-  toggle3: frameSpinner(['□', '■']),
-  toggle4: frameSpinner(['■', '□', '▪', '▫']),
+  toggle: frameSpinner(["⊶", "⊷"]),
+  toggle2: frameSpinner(["▫", "▪"]),
+  toggle3: frameSpinner(["□", "■"]),
+  toggle4: frameSpinner(["■", "□", "▪", "▫"]),
 
   // Arc
-  arc: frameSpinner(['◜', '◝', '◞', '◟']),
+  arc: frameSpinner(["◜", "◝", "◞", "◟"]),
 
   // Pipe
-  pipe: frameSpinner(['┤', '┘', '┴', '└', '├', '┌', '┬', '┐']),
+  pipe: frameSpinner(["┤", "┘", "┴", "└", "├", "┌", "┬", "┐"]),
 
   // Simple dots
-  simpleDots: frameSpinner(['.  ', '.. ', '...', '   ']),
-  simpleDots2: frameSpinner(['.  ', '.. ', '...', ' ..', '  .', '   ']),
+  simpleDots: frameSpinner([".  ", ".. ", "...", "   "]),
+  simpleDots2: frameSpinner([".  ", ".. ", "...", " ..", "  .", "   "]),
 
   // Balloon
-  balloon: frameSpinner([' ', '.', 'o', 'O', '@', '*', ' ']),
-  balloon2: frameSpinner(['.', 'o', 'O', '°', 'O', 'o', '.']),
+  balloon: frameSpinner([" ", ".", "o", "O", "@", "*", " "]),
+  balloon2: frameSpinner([".", "o", "O", "°", "O", "o", "."]),
 
   // Noise
-  noise: frameSpinner(['▓', '▒', '░', '▒']),
+  noise: frameSpinner(["▓", "▒", "░", "▒"]),
 
   // Bounce ball
-  bounceBall: frameSpinner(['( ●    )', '(  ●   )', '(   ●  )', '(    ● )', '(     ●)', '(    ● )', '(   ●  )', '(  ●   )', '( ●    )', '(●     )']),
+  bounceBall: frameSpinner([
+    "( ●    )",
+    "(  ●   )",
+    "(   ●  )",
+    "(    ● )",
+    "(     ●)",
+    "(    ● )",
+    "(   ●  )",
+    "(  ●   )",
+    "( ●    )",
+    "(●     )",
+  ]),
 
   // Shark
-  shark: scrollingSpinner('|\\‾‾‾/|', { background: '~' }),
+  shark: scrollingSpinner("|\\‾‾‾/|", { background: "~" }),
 
   // Dqpb
-  dqpb: frameSpinner(['d', 'q', 'p', 'b']),
+  dqpb: frameSpinner(["d", "q", "p", "b"]),
 
   // Grenade
-  grenade: frameSpinner(['،  ', '′  ', ' ´ ', ' ‾ ', '  ⸌', '  ⸊', '  |', '  ⁎', '  ⁕', ' ෴ ', '  ⁂', '   ', '   ', '   ']),
+  grenade: frameSpinner([
+    "،  ",
+    "′  ",
+    " ´ ",
+    " ‾ ",
+    "  ⸌",
+    "  ⸊",
+    "  |",
+    "  ⁎",
+    "  ⁕",
+    " ෴ ",
+    "  ⁂",
+    "   ",
+    "   ",
+    "   ",
+  ]),
 
   // Default
-  default: frameSpinner(['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']),
+  default: frameSpinner(["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]),
 };
 
 // Aliases
@@ -161,21 +253,21 @@ export const bars: Record<string, BarFactory> = {
   arrow: arrowBar(),
 
   // Simple styles
-  solid: barFactory({ chars: '█', background: '░', borders: ['│', '│'] }),
-  squares: barFactory({ chars: '■', background: '□', borders: ['[', ']'] }),
-  circles: barFactory({ chars: '●', background: '○', borders: ['(', ')'] }),
+  solid: barFactory({ chars: "█", background: "░", borders: ["│", "│"] }),
+  squares: barFactory({ chars: "■", background: "□", borders: ["[", "]"] }),
+  circles: barFactory({ chars: "●", background: "○", borders: ["(", ")"] }),
 
   // ASCII-only
-  ascii: barFactory({ chars: '#', background: '.', borders: ['[', ']'] }),
-  ascii2: barFactory({ chars: '=', background: ' ', borders: ['[', ']'] }),
+  ascii: barFactory({ chars: "#", background: ".", borders: ["[", "]"] }),
+  ascii2: barFactory({ chars: "=", background: " ", borders: ["[", "]"] }),
 
   // Fancy
-  fancy: barFactory({ chars: '▰', background: '▱', borders: ['⟨', '⟩'] }),
-  fancy2: barFactory({ chars: '█', background: '▁', borders: ['▕', '▏'] }),
+  fancy: barFactory({ chars: "▰", background: "▱", borders: ["⟨", "⟩"] }),
+  fancy2: barFactory({ chars: "█", background: "▁", borders: ["▕", "▏"] }),
 
   // Minimal
-  minimal: barFactory({ chars: '━', background: '─', borders: null }),
-  minimal2: barFactory({ chars: '■', background: ' ', borders: null }),
+  minimal: barFactory({ chars: "━", background: "─", borders: null }),
+  minimal2: barFactory({ chars: "■", background: " ", borders: null }),
 
   // Default
   default: smoothBar(),
@@ -193,50 +285,50 @@ export interface Theme {
 
 export const themes: Record<string, Theme> = {
   smooth: {
-    spinner: 'waves',
-    bar: 'smooth',
-    unknown: 'waves'
+    spinner: "waves",
+    bar: "smooth",
+    unknown: "waves",
   },
   classic: {
-    spinner: 'classic',
-    bar: 'classic',
-    unknown: 'classic'
+    spinner: "classic",
+    bar: "classic",
+    unknown: "classic",
   },
   ascii: {
-    spinner: 'line',
-    bar: 'ascii',
-    unknown: 'line'
+    spinner: "line",
+    bar: "ascii",
+    unknown: "line",
   },
   scuba: {
-    spinner: 'shark',
-    bar: 'fish',
-    unknown: 'waves'
+    spinner: "shark",
+    bar: "fish",
+    unknown: "waves",
   },
   musical: {
-    spinner: 'notes',
-    bar: 'smooth',
-    unknown: 'notes'
+    spinner: "notes",
+    bar: "smooth",
+    unknown: "notes",
   },
   halloween: {
-    spinner: 'moon',
-    bar: 'halloween',
-    unknown: 'moon'
+    spinner: "moon",
+    bar: "halloween",
+    unknown: "moon",
   },
   minimal: {
-    spinner: 'dots',
-    bar: 'minimal',
-    unknown: 'dots'
+    spinner: "dots",
+    bar: "minimal",
+    unknown: "dots",
   },
   modern: {
-    spinner: 'dots2',
-    bar: 'blocks',
-    unknown: 'dots2'
+    spinner: "dots2",
+    bar: "blocks",
+    unknown: "dots2",
   },
   default: {
-    spinner: 'dots',
-    bar: 'smooth',
-    unknown: 'dots'
-  }
+    spinner: "dots",
+    bar: "smooth",
+    unknown: "dots",
+  },
 };
 
 // ============================================
@@ -247,7 +339,7 @@ export const themes: Record<string, Theme> = {
  * Get a spinner by name, or return the default.
  */
 export function getSpinner(name: string | SpinnerFactory): SpinnerFactory {
-  if (typeof name === 'function') {
+  if (typeof name === "function") {
     return name;
   }
   return spinners[name] || spinners.default;
@@ -257,7 +349,7 @@ export function getSpinner(name: string | SpinnerFactory): SpinnerFactory {
  * Get a bar by name, or return the default.
  */
 export function getBar(name: string | BarFactory): BarFactory {
-  if (typeof name === 'function') {
+  if (typeof name === "function") {
     return name;
   }
   return bars[name] || bars.default;

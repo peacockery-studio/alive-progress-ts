@@ -24,18 +24,22 @@ let hookContext: HookContext | null = null;
 /**
  * Format a message with position enrichment.
  */
-function enrichMessage(message: string, position: number, offset: number): string {
+function enrichMessage(
+  message: string,
+  position: number,
+  offset: number
+): string {
   const pos = position + offset;
   const prefix = `on ${pos}: `;
-  const indent = ' '.repeat(prefix.length);
+  const indent = " ".repeat(prefix.length);
 
   // Handle multiline messages
-  const lines = message.split('\n');
+  const lines = message.split("\n");
   if (lines.length === 1) {
     return prefix + message;
   }
 
-  return lines.map((line, i) => (i === 0 ? prefix : indent) + line).join('\n');
+  return lines.map((line, i) => (i === 0 ? prefix : indent) + line).join("\n");
 }
 
 /**
@@ -53,17 +57,23 @@ function createInterceptor(
 
     // Format the message
     const message = args
-      .map(arg => {
-        if (typeof arg === 'string') return arg;
-        if (arg === null) return 'null';
-        if (arg === undefined) return 'undefined';
+      .map((arg) => {
+        if (typeof arg === "string") {
+          return arg;
+        }
+        if (arg === null) {
+          return "null";
+        }
+        if (arg === undefined) {
+          return "undefined";
+        }
         try {
           return JSON.stringify(arg, null, 2);
         } catch {
           return String(arg);
         }
       })
-      .join(' ');
+      .join(" ");
 
     // Enrich with position if enabled
     const enriched = context.enrichPrint
@@ -96,7 +106,7 @@ export function installHooks(options: {
     position: 0,
     enrichPrint: options.enrichPrint,
     enrichOffset: options.enrichOffset,
-    printFn: options.printFn
+    printFn: options.printFn,
   };
 
   console.log = createInterceptor(hookContext, hookContext.originalLog);
@@ -108,7 +118,9 @@ export function installHooks(options: {
  * Uninstall hooks and restore original console functions.
  */
 export function uninstallHooks(): void {
-  if (!hookContext) return;
+  if (!hookContext) {
+    return;
+  }
 
   console.log = hookContext.originalLog;
   console.error = hookContext.originalError;

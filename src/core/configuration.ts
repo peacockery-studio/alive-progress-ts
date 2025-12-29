@@ -4,9 +4,14 @@
  * Supports global defaults and per-bar overrides.
  */
 
-import type { SpinnerFactory } from '../animations/spinners.js';
-import type { BarFactory } from '../animations/bars.js';
-import { getSpinner, getBar, getTheme, type Theme } from '../styles/internal.js';
+import type { BarFactory } from "../animations/bars.js";
+import type { SpinnerFactory } from "../animations/spinners.js";
+import {
+  getBar,
+  getSpinner,
+  getTheme,
+  type Theme,
+} from "../styles/internal.js";
 
 /**
  * All configurable options for the progress bar.
@@ -64,7 +69,7 @@ export interface AliveBarOptions {
   /** Unit label (e.g., 'B', 'bytes') */
   unit?: string;
   /** Scale type ('SI', 'IEC', 'SI2') */
-  scale?: 'SI' | 'IEC' | 'SI2' | null;
+  scale?: "SI" | "IEC" | "SI2" | null;
   /** Decimal precision when scaling */
   precision?: number;
 
@@ -98,7 +103,7 @@ export interface ResolvedConfig {
   refreshSecs: number;
   calibrate: number;
   unit: string;
-  scale: 'SI' | 'IEC' | 'SI2' | null;
+  scale: "SI" | "IEC" | "SI2" | null;
   precision: number;
   enrichPrint: boolean;
   enrichOffset: number;
@@ -109,10 +114,10 @@ export interface ResolvedConfig {
  */
 const DEFAULT_CONFIG: ResolvedConfig = {
   length: 40,
-  spinner: getSpinner('default'),
-  bar: getBar('default'),
-  unknown: getSpinner('default'),
-  title: '',
+  spinner: getSpinner("default"),
+  bar: getBar("default"),
+  unknown: getSpinner("default"),
+  title: "",
   file: process.stdout,
   forceTty: null,
   disable: false,
@@ -125,12 +130,12 @@ const DEFAULT_CONFIG: ResolvedConfig = {
   ctrlC: true,
   dualLine: false,
   refreshSecs: 0,
-  calibrate: 1000000,
-  unit: '',
+  calibrate: 1_000_000,
+  unit: "",
   scale: null,
   precision: 1,
   enrichPrint: true,
-  enrichOffset: 0
+  enrichOffset: 0,
 };
 
 /**
@@ -173,9 +178,9 @@ export function resolveConfig(options: AliveBarOptions = {}): ResolvedConfig {
 
   return {
     length: merged.length ?? DEFAULT_CONFIG.length,
-    spinner: getSpinner(merged.spinner ?? theme?.spinner ?? 'default'),
-    bar: getBar(merged.bar ?? theme?.bar ?? 'default'),
-    unknown: getSpinner(merged.unknown ?? theme?.unknown ?? 'default'),
+    spinner: getSpinner(merged.spinner ?? theme?.spinner ?? "default"),
+    bar: getBar(merged.bar ?? theme?.bar ?? "default"),
+    unknown: getSpinner(merged.unknown ?? theme?.unknown ?? "default"),
     title: merged.title ?? DEFAULT_CONFIG.title,
     file: merged.file ?? DEFAULT_CONFIG.file,
     forceTty: merged.forceTty ?? DEFAULT_CONFIG.forceTty,
@@ -194,7 +199,7 @@ export function resolveConfig(options: AliveBarOptions = {}): ResolvedConfig {
     scale: merged.scale ?? DEFAULT_CONFIG.scale,
     precision: merged.precision ?? DEFAULT_CONFIG.precision,
     enrichPrint: merged.enrichPrint ?? DEFAULT_CONFIG.enrichPrint,
-    enrichOffset: merged.enrichOffset ?? DEFAULT_CONFIG.enrichOffset
+    enrichOffset: merged.enrichOffset ?? DEFAULT_CONFIG.enrichOffset,
   };
 }
 
@@ -205,5 +210,5 @@ export const config = {
   set: setGlobalConfig,
   get: getGlobalConfig,
   reset: resetGlobalConfig,
-  resolve: resolveConfig
+  resolve: resolveConfig,
 };

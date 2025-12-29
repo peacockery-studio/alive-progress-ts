@@ -1,115 +1,115 @@
-import { describe, test, expect, beforeEach } from 'bun:test';
+import { beforeEach, describe, expect, test } from "bun:test";
 import {
+  ETACalculator,
   formatDuration,
   formatRate,
   RateSmoother,
   Timer,
-  ETACalculator
-} from '../src/utils/timing';
+} from "../src/utils/timing";
 
-describe('formatDuration', () => {
-  describe('short format', () => {
-    test('formats sub-second durations', () => {
-      expect(formatDuration(0.5, true)).toBe('0.5s');
-      expect(formatDuration(0.15, true)).toBe('0.1s');
+describe("formatDuration", () => {
+  describe("short format", () => {
+    test("formats sub-second durations", () => {
+      expect(formatDuration(0.5, true)).toBe("0.5s");
+      expect(formatDuration(0.15, true)).toBe("0.1s");
     });
 
-    test('formats seconds', () => {
-      expect(formatDuration(5, true)).toBe('5.0s');
-      expect(formatDuration(5.5, true)).toBe('5.5s');
+    test("formats seconds", () => {
+      expect(formatDuration(5, true)).toBe("5.0s");
+      expect(formatDuration(5.5, true)).toBe("5.5s");
     });
 
-    test('formats minutes and seconds', () => {
-      expect(formatDuration(65, true)).toBe('1m5s');
-      expect(formatDuration(125, true)).toBe('2m5s');
+    test("formats minutes and seconds", () => {
+      expect(formatDuration(65, true)).toBe("1m5s");
+      expect(formatDuration(125, true)).toBe("2m5s");
     });
 
-    test('formats hours and minutes', () => {
-      expect(formatDuration(3665, true)).toBe('1h1m');
-      expect(formatDuration(7325, true)).toBe('2h2m');
-    });
-  });
-
-  describe('long format', () => {
-    test('formats sub-minute durations', () => {
-      expect(formatDuration(5)).toBe('5.0s');
-      expect(formatDuration(45.5)).toBe('45.5s');
-    });
-
-    test('formats minutes', () => {
-      expect(formatDuration(65)).toBe('1:05');
-      expect(formatDuration(125)).toBe('2:05');
-    });
-
-    test('formats hours', () => {
-      expect(formatDuration(3665)).toBe('1:01:05');
-      expect(formatDuration(7325)).toBe('2:02:05');
+    test("formats hours and minutes", () => {
+      expect(formatDuration(3665, true)).toBe("1h1m");
+      expect(formatDuration(7325, true)).toBe("2h2m");
     });
   });
 
-  test('handles invalid values', () => {
-    expect(formatDuration(Infinity, true)).toBe('?');
-    expect(formatDuration(-1, true)).toBe('?');
-    expect(formatDuration(NaN, true)).toBe('?');
+  describe("long format", () => {
+    test("formats sub-minute durations", () => {
+      expect(formatDuration(5)).toBe("5.0s");
+      expect(formatDuration(45.5)).toBe("45.5s");
+    });
+
+    test("formats minutes", () => {
+      expect(formatDuration(65)).toBe("1:05");
+      expect(formatDuration(125)).toBe("2:05");
+    });
+
+    test("formats hours", () => {
+      expect(formatDuration(3665)).toBe("1:01:05");
+      expect(formatDuration(7325)).toBe("2:02:05");
+    });
+  });
+
+  test("handles invalid values", () => {
+    expect(formatDuration(Number.POSITIVE_INFINITY, true)).toBe("?");
+    expect(formatDuration(-1, true)).toBe("?");
+    expect(formatDuration(Number.NaN, true)).toBe("?");
   });
 });
 
-describe('formatRate', () => {
-  test('formats low rates', () => {
-    expect(formatRate(0.5)).toBe('0.50/s');
-    expect(formatRate(0.75)).toBe('0.75/s');
+describe("formatRate", () => {
+  test("formats low rates", () => {
+    expect(formatRate(0.5)).toBe("0.50/s");
+    expect(formatRate(0.75)).toBe("0.75/s");
   });
 
-  test('formats normal rates', () => {
-    expect(formatRate(1.5)).toBe('1.5/s');
-    expect(formatRate(50)).toBe('50.0/s');
-    expect(formatRate(150)).toBe('150/s');
+  test("formats normal rates", () => {
+    expect(formatRate(1.5)).toBe("1.5/s");
+    expect(formatRate(50)).toBe("50.0/s");
+    expect(formatRate(150)).toBe("150/s");
   });
 
-  test('formats high rates with k suffix', () => {
-    expect(formatRate(1500)).toBe('1.5k/s');
-    expect(formatRate(50000)).toBe('50.0k/s');
+  test("formats high rates with k suffix", () => {
+    expect(formatRate(1500)).toBe("1.5k/s");
+    expect(formatRate(50_000)).toBe("50.0k/s");
   });
 
-  test('formats very high rates with M suffix', () => {
-    expect(formatRate(1500000)).toBe('1.5M/s');
-    expect(formatRate(50000000)).toBe('50.0M/s');
+  test("formats very high rates with M suffix", () => {
+    expect(formatRate(1_500_000)).toBe("1.5M/s");
+    expect(formatRate(50_000_000)).toBe("50.0M/s");
   });
 
-  test('includes unit when specified', () => {
-    expect(formatRate(1000, 'B')).toBe('1.0k B/s');
+  test("includes unit when specified", () => {
+    expect(formatRate(1000, "B")).toBe("1.0k B/s");
   });
 
-  test('handles invalid values', () => {
-    expect(formatRate(Infinity)).toBe('?/s');
-    expect(formatRate(-1)).toBe('?/s');
-    expect(formatRate(NaN)).toBe('?/s');
+  test("handles invalid values", () => {
+    expect(formatRate(Number.POSITIVE_INFINITY)).toBe("?/s");
+    expect(formatRate(-1)).toBe("?/s");
+    expect(formatRate(Number.NaN)).toBe("?/s");
   });
 });
 
-describe('RateSmoother', () => {
+describe("RateSmoother", () => {
   let smoother: RateSmoother;
 
   beforeEach(() => {
     smoother = new RateSmoother(0.5);
   });
 
-  test('first update returns the input value', () => {
+  test("first update returns the input value", () => {
     expect(smoother.update(100)).toBe(100);
   });
 
-  test('smooths subsequent values', () => {
+  test("smooths subsequent values", () => {
     smoother.update(100);
     // With alpha=0.5: smoothed = 0.5 * 50 + 0.5 * 100 = 75
     expect(smoother.update(50)).toBe(75);
   });
 
-  test('get returns current smoothed rate', () => {
+  test("get returns current smoothed rate", () => {
     smoother.update(100);
     expect(smoother.get()).toBe(100);
   });
 
-  test('reset clears the smoother', () => {
+  test("reset clears the smoother", () => {
     smoother.update(100);
     smoother.reset();
     expect(smoother.get()).toBe(0);
@@ -117,7 +117,7 @@ describe('RateSmoother', () => {
     expect(smoother.update(50)).toBe(50);
   });
 
-  test('exponential smoothing converges', () => {
+  test("exponential smoothing converges", () => {
     // Following the pattern from the Python tests
     const alpha = 0.5;
     const smoother = new RateSmoother(alpha);
@@ -136,8 +136,8 @@ describe('RateSmoother', () => {
   });
 });
 
-describe('Timer', () => {
-  test('elapsed returns time since creation', async () => {
+describe("Timer", () => {
+  test("elapsed returns time since creation", async () => {
     const timer = new Timer();
     await Bun.sleep(50);
     const elapsed = timer.elapsed();
@@ -145,7 +145,7 @@ describe('Timer', () => {
     expect(elapsed).toBeLessThan(0.2);
   });
 
-  test('pause and resume work correctly', async () => {
+  test("pause and resume work correctly", async () => {
     const timer = new Timer();
     await Bun.sleep(50);
 
@@ -166,7 +166,7 @@ describe('Timer', () => {
     expect(elapsedAfterResume).toBeGreaterThan(elapsedAtPause);
   });
 
-  test('isPaused returns correct state', () => {
+  test("isPaused returns correct state", () => {
     const timer = new Timer();
     expect(timer.isPaused()).toBe(false);
 
@@ -177,7 +177,7 @@ describe('Timer', () => {
     expect(timer.isPaused()).toBe(false);
   });
 
-  test('reset resets the timer', async () => {
+  test("reset resets the timer", async () => {
     const timer = new Timer();
     await Bun.sleep(50);
 
@@ -187,8 +187,8 @@ describe('Timer', () => {
   });
 });
 
-describe('ETACalculator', () => {
-  test('calculates ETA based on progress', async () => {
+describe("ETACalculator", () => {
+  test("calculates ETA based on progress", async () => {
     const calc = new ETACalculator(0.5);
 
     // Simulate some progress
@@ -199,13 +199,13 @@ describe('ETACalculator', () => {
     expect(eta1).toBeGreaterThan(0);
   });
 
-  test('returns Infinity when no progress', () => {
+  test("returns Infinity when no progress", () => {
     const calc = new ETACalculator();
     const eta = calc.update(0, 100);
-    expect(eta).toBe(Infinity);
+    expect(eta).toBe(Number.POSITIVE_INFINITY);
   });
 
-  test('getRate returns current rate', async () => {
+  test("getRate returns current rate", async () => {
     const calc = new ETACalculator(0.5);
 
     // Initially 0
@@ -220,7 +220,7 @@ describe('ETACalculator', () => {
     expect(calc.getRate()).toBeGreaterThan(0);
   });
 
-  test('reset clears the calculator', async () => {
+  test("reset clears the calculator", async () => {
     const calc = new ETACalculator();
 
     await Bun.sleep(50);

@@ -5,9 +5,9 @@
 /**
  * Format a duration in seconds to a human-readable string.
  */
-export function formatDuration(seconds: number, short: boolean = false): string {
-  if (!isFinite(seconds) || seconds < 0) {
-    return short ? '?' : '?';
+export function formatDuration(seconds: number, short = false): string {
+  if (!Number.isFinite(seconds) || seconds < 0) {
+    return short ? "?" : "?";
   }
 
   const hours = Math.floor(seconds / 3600);
@@ -31,10 +31,10 @@ export function formatDuration(seconds: number, short: boolean = false): string 
 
   // Long format
   if (hours > 0) {
-    return `${hours}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    return `${hours}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   }
   if (minutes > 0) {
-    return `${minutes}:${String(secs).padStart(2, '0')}`;
+    return `${minutes}:${String(secs).padStart(2, "0")}`;
   }
   return `${secs}.${ms}s`;
 }
@@ -42,15 +42,15 @@ export function formatDuration(seconds: number, short: boolean = false): string 
 /**
  * Format a rate (items per second) to a human-readable string.
  */
-export function formatRate(rate: number, unit: string = ''): string {
-  if (!isFinite(rate) || rate < 0) {
-    return '?/s';
+export function formatRate(rate: number, unit = ""): string {
+  if (!Number.isFinite(rate) || rate < 0) {
+    return "?/s";
   }
 
-  const unitStr = unit ? ` ${unit}` : '';
+  const unitStr = unit ? ` ${unit}` : "";
 
-  if (rate >= 1000000) {
-    return `${(rate / 1000000).toFixed(1)}M${unitStr}/s`;
+  if (rate >= 1_000_000) {
+    return `${(rate / 1_000_000).toFixed(1)}M${unitStr}/s`;
   }
   if (rate >= 1000) {
     return `${(rate / 1000).toFixed(1)}k${unitStr}/s`;
@@ -69,11 +69,11 @@ export function formatRate(rate: number, unit: string = ''): string {
  * Uses the formula: y_hat = alpha * y + (1 - alpha) * y_hat
  */
 export class RateSmoother {
-  private smoothedRate: number = 0;
-  private alpha: number;
-  private initialized: boolean = false;
+  private smoothedRate = 0;
+  private readonly alpha: number;
+  private initialized = false;
 
-  constructor(alpha: number = 0.1) {
+  constructor(alpha = 0.1) {
     this.alpha = alpha;
   }
 
@@ -81,11 +81,12 @@ export class RateSmoother {
    * Update the smoothed rate with a new sample.
    */
   update(rate: number): number {
-    if (!this.initialized) {
+    if (this.initialized) {
+      this.smoothedRate =
+        this.alpha * rate + (1 - this.alpha) * this.smoothedRate;
+    } else {
       this.smoothedRate = rate;
       this.initialized = true;
-    } else {
-      this.smoothedRate = this.alpha * rate + (1 - this.alpha) * this.smoothedRate;
     }
     return this.smoothedRate;
   }
@@ -111,7 +112,7 @@ export class RateSmoother {
  */
 export class Timer {
   private startTime: number;
-  private pausedTime: number = 0;
+  private pausedTime = 0;
   private pauseStart: number | null = null;
 
   constructor() {
@@ -123,9 +124,7 @@ export class Timer {
    */
   elapsed(): number {
     const now = Date.now();
-    const pausedDuration = this.pauseStart
-      ? (now - this.pauseStart)
-      : 0;
+    const pausedDuration = this.pauseStart ? now - this.pauseStart : 0;
     return (now - this.startTime - this.pausedTime - pausedDuration) / 1000;
   }
 
@@ -169,11 +168,11 @@ export class Timer {
  * ETA calculator using exponential smoothing.
  */
 export class ETACalculator {
-  private rateSmoother: RateSmoother;
-  private lastCount: number = 0;
-  private lastTime: number = 0;
+  private readonly rateSmoother: RateSmoother;
+  private lastCount = 0;
+  private lastTime = 0;
 
-  constructor(alpha: number = 0.1) {
+  constructor(alpha = 0.1) {
     this.rateSmoother = new RateSmoother(alpha);
     this.lastTime = Date.now();
   }
@@ -200,7 +199,7 @@ export class ETACalculator {
 
     const rate = this.rateSmoother.get();
     if (rate <= 0) {
-      return Infinity;
+      return Number.POSITIVE_INFINITY;
     }
 
     const remaining = total - current;

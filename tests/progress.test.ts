@@ -1,8 +1,8 @@
-import { describe, test, expect, beforeEach, afterEach } from 'bun:test';
-import { aliveBar, aliveIt, aliveItSync, type Receipt } from '../src/core/progress';
-import { resetGlobalConfig } from '../src/core/configuration';
+import { afterEach, beforeEach, describe, expect, test } from "bun:test";
+import { resetGlobalConfig } from "../src/core/configuration";
+import { aliveBar, aliveIt, aliveItSync } from "../src/core/progress";
 
-describe('aliveBar', () => {
+describe("aliveBar", () => {
   beforeEach(() => {
     resetGlobalConfig();
   });
@@ -11,18 +11,18 @@ describe('aliveBar', () => {
     resetGlobalConfig();
   });
 
-  test('creates progress bar with total', () => {
+  test("creates progress bar with total", () => {
     const { bar, done } = aliveBar(100, { disable: true });
 
     expect(bar).toBeDefined();
     expect(done).toBeDefined();
-    expect(typeof bar).toBe('function');
-    expect(typeof done).toBe('function');
+    expect(typeof bar).toBe("function");
+    expect(typeof done).toBe("function");
 
     done();
   });
 
-  test('creates progress bar without total (unknown mode)', () => {
+  test("creates progress bar without total (unknown mode)", () => {
     const { bar, done } = aliveBar(null, { disable: true });
 
     expect(bar).toBeDefined();
@@ -34,7 +34,7 @@ describe('aliveBar', () => {
     expect(receipt.count).toBe(2);
   });
 
-  test('bar() increments counter', () => {
+  test("bar() increments counter", () => {
     const { bar, done } = aliveBar(100, { disable: true });
 
     expect(bar.current).toBe(0);
@@ -51,33 +51,33 @@ describe('aliveBar', () => {
     done();
   });
 
-  test('bar.text can be set', () => {
+  test("bar.text can be set", () => {
     const { bar, done } = aliveBar(100, { disable: true });
 
-    bar.text = 'Processing...';
-    expect(bar.text).toBe('Processing...');
+    bar.text = "Processing...";
+    expect(bar.text).toBe("Processing...");
 
-    bar.setText('Updated');
-    expect(bar.text).toBe('Updated');
-
-    done();
-  });
-
-  test('bar.title can be set', () => {
-    const { bar, done } = aliveBar(100, { disable: true, title: 'Initial' });
-
-    expect(bar.title).toBe('Initial');
-
-    bar.title = 'Updated';
-    expect(bar.title).toBe('Updated');
-
-    bar.setTitle('Final');
-    expect(bar.title).toBe('Final');
+    bar.setText("Updated");
+    expect(bar.text).toBe("Updated");
 
     done();
   });
 
-  test('bar.elapsed returns elapsed time', async () => {
+  test("bar.title can be set", () => {
+    const { bar, done } = aliveBar(100, { disable: true, title: "Initial" });
+
+    expect(bar.title).toBe("Initial");
+
+    bar.title = "Updated";
+    expect(bar.title).toBe("Updated");
+
+    bar.setTitle("Final");
+    expect(bar.title).toBe("Final");
+
+    done();
+  });
+
+  test("bar.elapsed returns elapsed time", async () => {
     const { bar, done } = aliveBar(100, { disable: true });
 
     await Bun.sleep(50);
@@ -88,7 +88,7 @@ describe('aliveBar', () => {
     done();
   });
 
-  test('bar.pause() pauses and returns resume function', async () => {
+  test("bar.pause() pauses and returns resume function", async () => {
     const { bar, done } = aliveBar(100, { disable: true });
 
     bar();
@@ -112,21 +112,21 @@ describe('aliveBar', () => {
     done();
   });
 
-  test('bar.monitor returns formatted progress', () => {
+  test("bar.monitor returns formatted progress", () => {
     const { bar, done } = aliveBar(100, { disable: true });
 
     bar();
     bar();
 
     const monitor = bar.monitor;
-    expect(monitor).toContain('2');
-    expect(monitor).toContain('100');
-    expect(monitor).toContain('%');
+    expect(monitor).toContain("2");
+    expect(monitor).toContain("100");
+    expect(monitor).toContain("%");
 
     done();
   });
 
-  test('skipped items are tracked correctly', () => {
+  test("skipped items are tracked correctly", () => {
     const { bar, done } = aliveBar(100, { disable: true });
 
     bar(50, { skipped: true });
@@ -139,7 +139,7 @@ describe('aliveBar', () => {
     done();
   });
 
-  test('done() returns receipt', () => {
+  test("done() returns receipt", () => {
     const { bar, done } = aliveBar(100, { disable: true });
 
     for (let i = 0; i < 100; i++) {
@@ -158,7 +158,7 @@ describe('aliveBar', () => {
     expect(receipt.underflow).toBe(false);
   });
 
-  test('receipt shows overflow', () => {
+  test("receipt shows overflow", () => {
     const { bar, done } = aliveBar(10, { disable: true });
 
     for (let i = 0; i < 15; i++) {
@@ -171,7 +171,7 @@ describe('aliveBar', () => {
     expect(receipt.success).toBe(false);
   });
 
-  test('receipt shows underflow', () => {
+  test("receipt shows underflow", () => {
     const { bar, done } = aliveBar(100, { disable: true });
 
     for (let i = 0; i < 50; i++) {
@@ -184,7 +184,7 @@ describe('aliveBar', () => {
     expect(receipt.success).toBe(false);
   });
 
-  test('bar.receipt is available after done()', () => {
+  test("bar.receipt is available after done()", () => {
     const { bar, done } = aliveBar(10, { disable: true });
 
     bar();
@@ -199,8 +199,8 @@ describe('aliveBar', () => {
   });
 });
 
-describe('aliveBar manual mode', () => {
-  test('manual mode sets percentage directly', () => {
+describe("aliveBar manual mode", () => {
+  test("manual mode sets percentage directly", () => {
     const { bar, done } = aliveBar(100, { disable: true, manual: true });
 
     bar(0.5); // 50%
@@ -213,8 +213,8 @@ describe('aliveBar manual mode', () => {
   });
 });
 
-describe('aliveBar options', () => {
-  test('disable option suppresses output', () => {
+describe("aliveBar options", () => {
+  test("disable option suppresses output", () => {
     const { bar, done } = aliveBar(100, { disable: true });
 
     // Should work without errors
@@ -223,27 +223,27 @@ describe('aliveBar options', () => {
     done();
   });
 
-  test('title option sets initial title', () => {
-    const { bar, done } = aliveBar(100, { disable: true, title: 'Test' });
-    expect(bar.title).toBe('Test');
+  test("title option sets initial title", () => {
+    const { bar, done } = aliveBar(100, { disable: true, title: "Test" });
+    expect(bar.title).toBe("Test");
     done();
   });
 
-  test('dualLine option can be set', () => {
+  test("dualLine option can be set", () => {
     // Just verify it doesn't throw
     const { done } = aliveBar(100, { disable: true, dualLine: true });
     done();
   });
 
-  test('receipt option can be disabled', () => {
+  test("receipt option can be disabled", () => {
     const { done } = aliveBar(100, { disable: true, receipt: false });
     // Should work without errors
     done();
   });
 });
 
-describe('aliveIt', () => {
-  test('iterates over array', async () => {
+describe("aliveIt", () => {
+  test("iterates over array", async () => {
     const items = [1, 2, 3, 4, 5];
     const collected: number[] = [];
 
@@ -254,18 +254,21 @@ describe('aliveIt', () => {
     expect(collected).toEqual(items);
   });
 
-  test('works with options', async () => {
-    const items = ['a', 'b', 'c'];
+  test("works with options", async () => {
+    const items = ["a", "b", "c"];
     const collected: string[] = [];
 
-    for await (const item of aliveIt(items, { disable: true, title: 'Processing' })) {
+    for await (const item of aliveIt(items, {
+      disable: true,
+      title: "Processing",
+    })) {
       collected.push(item);
     }
 
     expect(collected).toEqual(items);
   });
 
-  test('detects length from array', async () => {
+  test("detects length from array", async () => {
     const items = [1, 2, 3];
     let count = 0;
 
@@ -277,8 +280,8 @@ describe('aliveIt', () => {
   });
 });
 
-describe('aliveItSync', () => {
-  test('iterates synchronously over array', () => {
+describe("aliveItSync", () => {
+  test("iterates synchronously over array", () => {
     const items = [1, 2, 3, 4, 5];
     const collected: number[] = [];
 
@@ -289,7 +292,7 @@ describe('aliveItSync', () => {
     expect(collected).toEqual(items);
   });
 
-  test('works with Set', () => {
+  test("works with Set", () => {
     const items = new Set([1, 2, 3]);
     const collected: number[] = [];
 
@@ -300,7 +303,7 @@ describe('aliveItSync', () => {
     expect(collected).toEqual([1, 2, 3]);
   });
 
-  test('works with generator', () => {
+  test("works with generator", () => {
     function* gen() {
       yield 1;
       yield 2;
@@ -317,8 +320,8 @@ describe('aliveItSync', () => {
   });
 });
 
-describe('receipt data types', () => {
-  test('receipt has correct types', () => {
+describe("receipt data types", () => {
+  test("receipt has correct types", () => {
     const { bar, done } = aliveBar(10, { disable: true });
 
     for (let i = 0; i < 10; i++) {
@@ -327,13 +330,13 @@ describe('receipt data types', () => {
 
     const receipt = done();
 
-    expect(typeof receipt.total).toBe('number');
-    expect(typeof receipt.count).toBe('number');
-    expect(typeof receipt.percent).toBe('number');
-    expect(typeof receipt.elapsed).toBe('number');
-    expect(typeof receipt.rate).toBe('number');
-    expect(typeof receipt.success).toBe('boolean');
-    expect(typeof receipt.overflow).toBe('boolean');
-    expect(typeof receipt.underflow).toBe('boolean');
+    expect(typeof receipt.total).toBe("number");
+    expect(typeof receipt.count).toBe("number");
+    expect(typeof receipt.percent).toBe("number");
+    expect(typeof receipt.elapsed).toBe("number");
+    expect(typeof receipt.rate).toBe("number");
+    expect(typeof receipt.success).toBe("boolean");
+    expect(typeof receipt.overflow).toBe("boolean");
+    expect(typeof receipt.underflow).toBe("boolean");
   });
 });

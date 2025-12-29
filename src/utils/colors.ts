@@ -3,7 +3,7 @@
  */
 
 // ANSI escape codes
-export const ESC = '\x1b';
+export const ESC = "\x1b";
 export const CSI = `${ESC}[`;
 
 // Reset all styles
@@ -63,10 +63,10 @@ export const styles = {
 export const cursor = {
   hide: `${CSI}?25l`,
   show: `${CSI}?25h`,
-  up: (n: number = 1) => `${CSI}${n}A`,
-  down: (n: number = 1) => `${CSI}${n}B`,
-  forward: (n: number = 1) => `${CSI}${n}C`,
-  back: (n: number = 1) => `${CSI}${n}D`,
+  up: (n = 1) => `${CSI}${n}A`,
+  down: (n = 1) => `${CSI}${n}B`,
+  forward: (n = 1) => `${CSI}${n}C`,
+  back: (n = 1) => `${CSI}${n}D`,
   toColumn: (n: number) => `${CSI}${n}G`,
   toPosition: (row: number, col: number) => `${CSI}${row};${col}H`,
   save: `${CSI}s`,
@@ -94,7 +94,7 @@ export function colorize(text: string, color: string): string {
  * Apply multiple styles to text.
  */
 export function style(text: string, ...codes: string[]): string {
-  return `${codes.join('')}${text}${RESET}`;
+  return `${codes.join("")}${text}${RESET}`;
 }
 
 /**
@@ -129,8 +129,9 @@ export function bgRgb(r: number, g: number, b: number): string {
  * Strip ANSI codes from a string.
  */
 export function stripAnsi(text: string): string {
-  // eslint-disable-next-line no-control-regex
-  return text.replace(/\x1b\[[0-9;]*m/g, '');
+  // Using Unicode escape for ESC character to satisfy linter
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI escape codes require control characters
+  return text.replace(/\x1b\[[0-9;]*m/g, "");
 }
 
 /**

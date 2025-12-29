@@ -2,12 +2,12 @@
  * Terminal abstraction layer for different output environments.
  */
 
-import { TTYWriter, type TerminalWriter } from './tty.js';
-import { NonTTYWriter, VoidWriter } from './nonTty.js';
+import { NonTTYWriter, VoidWriter } from "./non-tty.js";
+import { type TerminalWriter, TTYWriter } from "./tty.js";
 
-export type { TerminalWriter } from './tty.js';
-export { TTYWriter } from './tty.js';
-export { NonTTYWriter, VoidWriter } from './nonTty.js';
+export { NonTTYWriter, VoidWriter } from "./non-tty.js";
+export type { TerminalWriter } from "./tty.js";
+export { TTYWriter } from "./tty.js";
 
 export interface TerminalOptions {
   stream?: NodeJS.WriteStream;
@@ -54,6 +54,8 @@ export function isTTY(stream: NodeJS.WriteStream = process.stdout): boolean {
 /**
  * Get terminal width.
  */
-export function getTerminalWidth(stream: NodeJS.WriteStream = process.stdout): number {
+export function getTerminalWidth(
+  stream: NodeJS.WriteStream = process.stdout
+): number {
   return stream.columns || 80;
 }

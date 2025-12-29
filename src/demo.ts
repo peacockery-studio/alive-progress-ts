@@ -3,15 +3,21 @@
  * Demo showcasing the alive-progress library features.
  */
 
-import { aliveBar, aliveIt, listSpinners, listBars, listThemes, spinners, bars } from './index.js';
+import {
+  aliveBar,
+  aliveIt,
+  listBars,
+  listSpinners,
+  listThemes,
+} from "./index.js";
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function basicDemo() {
-  console.log('\n🚀 Basic Progress Bar Demo\n');
-  console.log('─'.repeat(50));
+  console.log("\n🚀 Basic Progress Bar Demo\n");
+  console.log("─".repeat(50));
 
-  const { bar, done } = aliveBar(50, { title: 'Processing' });
+  const { bar, done } = aliveBar(50, { title: "Processing" });
 
   for (let i = 0; i < 50; i++) {
     await sleep(50);
@@ -19,20 +25,31 @@ async function basicDemo() {
   }
 
   done();
-  console.log('\n');
+  console.log("\n");
 }
 
 async function spinnerShowcase() {
-  console.log('\n✨ Spinner Showcase\n');
-  console.log('─'.repeat(50));
+  console.log("\n✨ Spinner Showcase\n");
+  console.log("─".repeat(50));
 
-  const spinnerNames = ['dots', 'dots2', 'classic', 'bounce', 'arrows', 'circle', 'pulse', 'star', 'moon', 'hearts'];
+  const spinnerNames = [
+    "dots",
+    "dots2",
+    "classic",
+    "bounce",
+    "arrows",
+    "circle",
+    "pulse",
+    "star",
+    "moon",
+    "hearts",
+  ];
 
   for (const name of spinnerNames) {
     const { bar, done } = aliveBar(20, {
       title: `${name.padEnd(12)}`,
       spinner: name,
-      bar: 'smooth'
+      bar: "smooth",
     });
 
     for (let i = 0; i < 20; i++) {
@@ -43,20 +60,29 @@ async function spinnerShowcase() {
     done();
   }
 
-  console.log('\n');
+  console.log("\n");
 }
 
 async function barShowcase() {
-  console.log('\n📊 Bar Style Showcase\n');
-  console.log('─'.repeat(50));
+  console.log("\n📊 Bar Style Showcase\n");
+  console.log("─".repeat(50));
 
-  const barNames = ['smooth', 'classic', 'blocks', 'bubbles', 'ascii', 'solid', 'fancy', 'minimal'];
+  const barNames = [
+    "smooth",
+    "classic",
+    "blocks",
+    "bubbles",
+    "ascii",
+    "solid",
+    "fancy",
+    "minimal",
+  ];
 
   for (const name of barNames) {
     const { bar, done } = aliveBar(20, {
       title: `${name.padEnd(12)}`,
       bar: name,
-      spinner: 'dots'
+      spinner: "dots",
     });
 
     for (let i = 0; i < 20; i++) {
@@ -67,19 +93,19 @@ async function barShowcase() {
     done();
   }
 
-  console.log('\n');
+  console.log("\n");
 }
 
 async function themeShowcase() {
-  console.log('\n🎨 Theme Showcase\n');
-  console.log('─'.repeat(50));
+  console.log("\n🎨 Theme Showcase\n");
+  console.log("─".repeat(50));
 
-  const themeNames = listThemes().filter(t => t !== 'default');
+  const themeNames = listThemes().filter((t) => t !== "default");
 
   for (const name of themeNames) {
     const { bar, done } = aliveBar(20, {
       title: `${name.padEnd(12)}`,
-      theme: name
+      theme: name,
     });
 
     for (let i = 0; i < 20; i++) {
@@ -90,17 +116,17 @@ async function themeShowcase() {
     done();
   }
 
-  console.log('\n');
+  console.log("\n");
 }
 
 async function manualModeDemo() {
-  console.log('\n🎛️  Manual Mode Demo\n');
-  console.log('─'.repeat(50));
+  console.log("\n🎛️  Manual Mode Demo\n");
+  console.log("─".repeat(50));
 
   const { bar, done } = aliveBar(100, {
-    title: 'Downloading',
+    title: "Downloading",
     manual: true,
-    bar: 'smooth'
+    bar: "smooth",
   });
 
   // Simulate variable progress
@@ -113,65 +139,69 @@ async function manualModeDemo() {
   }
 
   done();
-  console.log('\n');
+  console.log("\n");
 }
 
 async function unknownModeDemo() {
-  console.log('\n❓ Unknown Total Demo\n');
-  console.log('─'.repeat(50));
+  console.log("\n❓ Unknown Total Demo\n");
+  console.log("─".repeat(50));
 
   const { bar, done } = aliveBar(null, {
-    title: 'Scanning',
-    spinner: 'dots2'
+    title: "Scanning",
+    spinner: "dots2",
   });
 
   // Simulate unknown duration
   for (let i = 0; i < 30; i++) {
     await sleep(100);
     bar();
-    if (i === 10) bar.text = 'Found 100 files...';
-    if (i === 20) bar.text = 'Found 250 files...';
+    if (i === 10) {
+      bar.text = "Found 100 files...";
+    }
+    if (i === 20) {
+      bar.text = "Found 250 files...";
+    }
   }
 
   done();
-  console.log('\n');
+  console.log("\n");
 }
 
 async function iteratorDemo() {
-  console.log('\n🔄 Iterator Demo (aliveIt)\n');
-  console.log('─'.repeat(50));
+  console.log("\n🔄 Iterator Demo (aliveIt)\n");
+  console.log("─".repeat(50));
 
   const items = Array.from({ length: 30 }, (_, i) => `Item ${i + 1}`);
 
-  for await (const item of aliveIt(items, { title: 'Processing items' })) {
+  for await (const _item of aliveIt(items, { title: "Processing items" })) {
     await sleep(60);
     // Just iterate through items
   }
 
-  console.log('\n');
+  console.log("\n");
 }
 
 async function dualLineDemo() {
-  console.log('\n📝 Dual Line Mode Demo\n');
-  console.log('─'.repeat(50));
+  console.log("\n📝 Dual Line Mode Demo\n");
+  console.log("─".repeat(50));
 
   const { bar, done } = aliveBar(10, {
-    title: 'Tasks',
+    title: "Tasks",
     dualLine: true,
-    bar: 'smooth'
+    bar: "smooth",
   });
 
   const tasks = [
-    'Initializing environment...',
-    'Loading configuration...',
-    'Connecting to database...',
-    'Fetching user data...',
-    'Processing records...',
-    'Generating reports...',
-    'Optimizing results...',
-    'Saving to cache...',
-    'Cleaning up...',
-    'Finalizing...'
+    "Initializing environment...",
+    "Loading configuration...",
+    "Connecting to database...",
+    "Fetching user data...",
+    "Processing records...",
+    "Generating reports...",
+    "Optimizing results...",
+    "Saving to cache...",
+    "Cleaning up...",
+    "Finalizing...",
   ];
 
   for (const task of tasks) {
@@ -181,16 +211,16 @@ async function dualLineDemo() {
   }
 
   done();
-  console.log('\n');
+  console.log("\n");
 }
 
 async function consolePrintDemo() {
-  console.log('\n🖨️  Console Print Demo (with enrichment)\n');
-  console.log('─'.repeat(50));
+  console.log("\n🖨️  Console Print Demo (with enrichment)\n");
+  console.log("─".repeat(50));
 
   const { bar, done } = aliveBar(20, {
-    title: 'Working',
-    enrichPrint: true
+    title: "Working",
+    enrichPrint: true,
   });
 
   for (let i = 0; i < 20; i++) {
@@ -198,42 +228,60 @@ async function consolePrintDemo() {
     bar();
 
     // Print messages that will be enriched with position
-    if (i === 5) console.log('Found something interesting!');
-    if (i === 10) console.log('Halfway there...');
-    if (i === 15) console.log('Almost done!');
+    if (i === 5) {
+      console.log("Found something interesting!");
+    }
+    if (i === 10) {
+      console.log("Halfway there...");
+    }
+    if (i === 15) {
+      console.log("Almost done!");
+    }
   }
 
   done();
-  console.log('\n');
+  console.log("\n");
 }
 
-async function showAvailableStyles() {
-  console.log('\n📋 Available Styles\n');
-  console.log('─'.repeat(50));
+function showAvailableStyles() {
+  console.log("\n📋 Available Styles\n");
+  console.log("─".repeat(50));
 
-  console.log('\nSpinners:');
+  console.log("\nSpinners:");
   const spinnerList = listSpinners();
   for (let i = 0; i < spinnerList.length; i += 6) {
-    console.log('  ' + spinnerList.slice(i, i + 6).map(s => s.padEnd(14)).join(''));
+    console.log(
+      "  " +
+        spinnerList
+          .slice(i, i + 6)
+          .map((s) => s.padEnd(14))
+          .join("")
+    );
   }
 
-  console.log('\nBars:');
+  console.log("\nBars:");
   const barList = listBars();
   for (let i = 0; i < barList.length; i += 6) {
-    console.log('  ' + barList.slice(i, i + 6).map(s => s.padEnd(14)).join(''));
+    console.log(
+      "  " +
+        barList
+          .slice(i, i + 6)
+          .map((s) => s.padEnd(14))
+          .join("")
+    );
   }
 
-  console.log('\nThemes:');
+  console.log("\nThemes:");
   const themeList = listThemes();
-  console.log('  ' + themeList.join(', '));
+  console.log(`  ${themeList.join(", ")}`);
 
-  console.log('\n');
+  console.log("\n");
 }
 
 async function main() {
-  console.log('\n' + '═'.repeat(50));
-  console.log('   🌟 alive-progress TypeScript Demo 🌟');
-  console.log('═'.repeat(50));
+  console.log(`\n${"═".repeat(50)}`);
+  console.log("   🌟 alive-progress TypeScript Demo 🌟");
+  console.log("═".repeat(50));
 
   await basicDemo();
   await spinnerShowcase();
@@ -246,10 +294,10 @@ async function main() {
   await consolePrintDemo();
   await showAvailableStyles();
 
-  console.log('═'.repeat(50));
-  console.log('   Demo complete! 🎉');
-  console.log('═'.repeat(50));
-  console.log('\n');
+  console.log("═".repeat(50));
+  console.log("   Demo complete! 🎉");
+  console.log("═".repeat(50));
+  console.log("\n");
 }
 
 main().catch(console.error);

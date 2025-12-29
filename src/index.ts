@@ -20,61 +20,99 @@
  * @packageDocumentation
  */
 
-// Core progress bar
-export { aliveBar, aliveIt, aliveItSync } from './core/progress.js';
-export type { ProgressBar, Receipt } from './core/progress.js';
-
-// Configuration
-export { config, setGlobalConfig, getGlobalConfig, resetGlobalConfig, resolveConfig } from './core/configuration.js';
-export type { AliveBarOptions, ResolvedConfig } from './core/configuration.js';
-
-// Spinner factories
-export {
-  frameSpinner,
-  scrollingSpinner,
-  bouncingSpinner,
-  sequentialSpinner,
-  alongsideSpinner,
-  delayedSpinner,
-  pulsingSpinner
-} from './animations/spinners.js';
-export type { Spinner, SpinnerFactory, SpinnerFrame } from './animations/spinners.js';
-
+export type {
+  Bar,
+  BarFactory,
+  BarFrame,
+  BarOptions,
+} from "./animations/bars.js";
 // Bar factories
 export {
+  arrowBar,
   barFactory,
-  smoothBar,
-  classicBar,
   blocksBar,
   bubblesBar,
+  classicBar,
   fishBar,
   halloweenBar,
-  arrowBar,
-  tipOnlyBar
-} from './animations/bars.js';
-export type { Bar, BarFactory, BarFrame, BarOptions } from './animations/bars.js';
-
+  smoothBar,
+  tipOnlyBar,
+} from "./animations/bars.js";
+export type {
+  Spinner,
+  SpinnerFactory,
+  SpinnerFrame,
+} from "./animations/spinners.js";
+// Spinner factories
+export {
+  alongsideSpinner,
+  bouncingSpinner,
+  delayedSpinner,
+  frameSpinner,
+  pulsingSpinner,
+  scrollingSpinner,
+  sequentialSpinner,
+} from "./animations/spinners.js";
+export type { AliveBarOptions, ResolvedConfig } from "./core/configuration.js";
+// Configuration
+export {
+  config,
+  getGlobalConfig,
+  resetGlobalConfig,
+  resolveConfig,
+  setGlobalConfig,
+} from "./core/configuration.js";
+export type { ProgressBar, Receipt } from "./core/progress.js";
+// Core progress bar
+export { aliveBar, aliveIt, aliveItSync } from "./core/progress.js";
+export type { Theme } from "./styles/internal.js";
 // Built-in styles
 export {
-  spinners,
   bars,
-  themes,
-  getSpinner,
   getBar,
+  getSpinner,
   getTheme,
-  listSpinners,
   listBars,
-  listThemes
-} from './styles/internal.js';
-export type { Theme } from './styles/internal.js';
-
+  listSpinners,
+  listThemes,
+  spinners,
+  themes,
+} from "./styles/internal.js";
+export {
+  getCellsWidth,
+  getStringWidth,
+  splitGraphemes,
+  toCells,
+} from "./utils/cells.js";
+export {
+  bgColors,
+  brightColors,
+  colorize,
+  colors,
+  cursor,
+  screen,
+  stripAnsi,
+  style,
+  styles,
+} from "./utils/colors.js";
+export type {
+  TerminalOptions,
+  TerminalWriter,
+} from "./utils/terminal/index.js";
+export {
+  createTerminal,
+  getTerminalWidth,
+  isTTY,
+} from "./utils/terminal/index.js";
 // Utilities
-export { Timer, ETACalculator, RateSmoother, formatDuration, formatRate } from './utils/timing.js';
-export { getStringWidth, splitGraphemes, toCells, getCellsWidth } from './utils/cells.js';
-export { colors, brightColors, bgColors, styles, cursor, screen, colorize, style, stripAnsi } from './utils/colors.js';
-export { createTerminal, isTTY, getTerminalWidth } from './utils/terminal/index.js';
-export type { TerminalWriter, TerminalOptions } from './utils/terminal/index.js';
+export {
+  ETACalculator,
+  formatDuration,
+  formatRate,
+  RateSmoother,
+  Timer,
+} from "./utils/timing.js";
 
 // Default export for convenience
-import { aliveBar, aliveIt } from './core/progress.js';
+import { aliveBar, aliveIt } from "./core/progress.js";
 export default { aliveBar, aliveIt };

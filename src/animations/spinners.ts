@@ -5,7 +5,13 @@
  * They provide visual feedback that work is happening.
  */
 
-import { toCells, getCellsWidth, fixCells, cellsToString, type Cell } from '../utils/cells.js';
+import {
+  type Cell,
+  cellsToString,
+  fixCells,
+  getCellsWidth,
+  toCells,
+} from "../utils/cells.js";
 
 /**
  * A compiled spinner frame ready for display.
@@ -29,7 +35,7 @@ export type SpinnerFactory = (length: number) => Spinner;
  * Internal spinner spec for compilation.
  */
 interface SpinnerSpec {
-  frames: string[][];  // cycles x frames
+  frames: string[][]; // cycles x frames
 }
 
 /**
@@ -42,10 +48,10 @@ function compileSpinner(spec: SpinnerSpec, length: number): Spinner {
   for (const cycle of spec.frames) {
     for (const frame of cycle) {
       const cells = toCells(frame);
-      const fixed = fixCells(cells, length, ' ');
+      const fixed = fixCells(cells, length, " ");
       compiledFrames.push({
         content: cellsToString(fixed),
-        width: length
+        width: length,
       });
     }
   }
@@ -69,11 +75,11 @@ function compileSpinner(spec: SpinnerSpec, length: number): Spinner {
  * frameSpinner(['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'])  // Dots spinner
  */
 export function frameSpinner(frames: string | string[]): SpinnerFactory {
-  const frameArray = typeof frames === 'string' ? [...frames] : frames;
+  const frameArray = typeof frames === "string" ? [...frames] : frames;
 
   return (length: number) => {
     const spec: SpinnerSpec = {
-      frames: [frameArray]
+      frames: [frameArray],
     };
     return compileSpinner(spec, length);
   };
@@ -96,10 +102,10 @@ export function scrollingSpinner(
   } = {}
 ): SpinnerFactory {
   const {
-    background = ' ',
+    background = " ",
     right = false,
     hide = true,
-    wrap = false
+    wrap = false,
   } = options;
 
   return (length: number) => {
@@ -113,14 +119,16 @@ export function scrollingSpinner(
 
     for (let pos = 0; pos < totalPositions; pos++) {
       const frameCells: Cell[] = [];
-      const startPos = right ? (length - pos - 1) : (pos - (hide ? charWidth : 0));
+      const startPos = right ? length - pos - 1 : pos - (hide ? charWidth : 0);
 
       for (let i = 0; i < length; i++) {
         const charIndex = i - startPos;
         if (charIndex >= 0 && charIndex < charCells.length) {
           frameCells.push(charCells[charIndex]);
         } else if (wrap && charIndex < 0) {
-          const wrappedIndex = (charIndex % charCells.length + charCells.length) % charCells.length;
+          const wrappedIndex =
+            ((charIndex % charCells.length) + charCells.length) %
+            charCells.length;
           if (wrappedIndex < charCells.length) {
             frameCells.push(charCells[wrappedIndex]);
           } else {
@@ -149,11 +157,10 @@ export function bouncingSpinner(
     background?: string;
   } = {}
 ): SpinnerFactory {
-  const { background = ' ' } = options;
+  const { background = " " } = options;
 
-  const [forwardChars, backwardChars] = typeof chars === 'string'
-    ? [chars, chars]
-    : chars;
+  const [forwardChars, backwardChars] =
+    typeof chars === "string" ? [chars, chars] : chars;
 
   return (length: number) => {
     const forwardCells = toCells(forwardChars);
@@ -200,12 +207,14 @@ export function bouncingSpinner(
 /**
  * Create a sequential spinner that plays multiple spinners one after another.
  */
-export function sequentialSpinner(...factories: SpinnerFactory[]): SpinnerFactory {
+export function sequentialSpinner(
+  ...factories: SpinnerFactory[]
+): SpinnerFactory {
   return (length: number) => {
-    const spinners = factories.map(f => f(length));
+    const spinners = factories.map((f) => f(length));
     let currentIndex = 0;
     let frameCount = 0;
-    const framesPerSpinner = 20;  // Switch spinner after this many frames
+    const framesPerSpinner = 20; // Switch spinner after this many frames
 
     return () => {
       const frame = spinners[currentIndex]();
@@ -224,18 +233,20 @@ export function sequentialSpinner(...factories: SpinnerFactory[]): SpinnerFactor
 /**
  * Create an alongside spinner that shows multiple spinners side by side.
  */
-export function alongsideSpinner(...factories: SpinnerFactory[]): SpinnerFactory {
+export function alongsideSpinner(
+  ...factories: SpinnerFactory[]
+): SpinnerFactory {
   return (length: number) => {
     const perSpinner = Math.floor(length / factories.length);
-    const spinners = factories.map(f => f(perSpinner));
+    const spinners = factories.map((f) => f(perSpinner));
 
     return () => {
-      const parts = spinners.map(s => s().content);
-      const combined = parts.join('');
+      const parts = spinners.map((s) => s().content);
+      const combined = parts.join("");
       const cells = fixCells(toCells(combined), length);
       return {
         content: cellsToString(cells),
-        width: length
+        width: length,
       };
     };
   };
@@ -244,7 +255,11 @@ export function alongsideSpinner(...factories: SpinnerFactory[]): SpinnerFactory
 /**
  * Create a delayed spinner that shows the same animation multiple times with offset.
  */
-export function delayedSpinner(factory: SpinnerFactory, count: number, offset: number = 1): SpinnerFactory {
+export function delayedSpinner(
+  factory: SpinnerFactory,
+  count: number,
+  offset = 1
+): SpinnerFactory {
   return (length: number) => {
     const perCopy = Math.floor(length / count);
     const spinners: Spinner[] = [];
@@ -260,12 +275,12 @@ export function delayedSpinner(factory: SpinnerFactory, count: number, offset: n
     }
 
     return () => {
-      const parts = spinners.map(s => s().content);
-      const combined = parts.join('');
+      const parts = spinners.map((s) => s().content);
+      const combined = parts.join("");
       const cells = fixCells(toCells(combined), length);
       return {
         content: cellsToString(cells),
-        width: length
+        width: length,
       };
     };
   };
@@ -274,20 +289,21 @@ export function delayedSpinner(factory: SpinnerFactory, count: number, offset: n
 /**
  * Utility to create a spinner that pulses between states.
  */
-export function pulsingSpinner(states: string[], pause: number = 2): SpinnerFactory {
+export function pulsingSpinner(states: string[], pause = 2): SpinnerFactory {
   const frames: string[] = [];
 
   // Add each state with pauses
-  for (let i = 0; i < states.length; i++) {
+  for (const state of states) {
     for (let p = 0; p < pause; p++) {
-      frames.push(states[i]);
+      frames.push(state);
     }
   }
 
-  // Reverse back
-  for (let i = states.length - 2; i > 0; i--) {
+  // Reverse back (need index for reverse iteration)
+  const reversed = states.slice(1, -1).reverse();
+  for (const state of reversed) {
     for (let p = 0; p < pause; p++) {
-      frames.push(states[i]);
+      frames.push(state);
     }
   }
 

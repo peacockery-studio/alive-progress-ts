@@ -2,7 +2,7 @@
  * TTY terminal implementation with full ANSI support.
  */
 
-import { cursor, screen } from '../colors.js';
+import { cursor, screen } from "../colors.js";
 
 export interface TerminalWriter {
   write(text: string): void;
@@ -20,7 +20,7 @@ export interface TerminalWriter {
  * TTY terminal writer with full animation support.
  */
 export class TTYWriter implements TerminalWriter {
-  private stream: NodeJS.WriteStream;
+  private readonly stream: NodeJS.WriteStream;
 
   constructor(stream: NodeJS.WriteStream = process.stdout) {
     this.stream = stream;
@@ -31,7 +31,7 @@ export class TTYWriter implements TerminalWriter {
   }
 
   writeLine(text: string): void {
-    this.stream.write(text + '\n');
+    this.stream.write(`${text}\n`);
   }
 
   clearLine(): void {
@@ -39,7 +39,7 @@ export class TTYWriter implements TerminalWriter {
   }
 
   carriageReturn(): void {
-    this.stream.write('\r');
+    this.stream.write("\r");
   }
 
   hideCursor(): void {
