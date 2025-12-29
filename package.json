@@ -1,0 +1,45 @@
+{
+  "name": "alive-progress",
+  "version": "1.0.0",
+  "description": "A beautiful, animated progress bar for CLI applications in TypeScript",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "bin": {
+    "alive-progress-demo": "./dist/demo.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "demo": "node dist/demo.js",
+    "test": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "progress",
+    "progressbar",
+    "progress-bar",
+    "cli",
+    "terminal",
+    "spinner",
+    "animation",
+    "alive",
+    "beautiful"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "dependencies": {
+    "grapheme-splitter": "^1.0.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
