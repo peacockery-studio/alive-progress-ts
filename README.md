@@ -252,10 +252,14 @@ console.log('Bars:', listBars());
 console.log('Themes:', listThemes());
 ```
 
+## Acknowledgments
+
+This is a TypeScript port of the excellent [alive-progress](https://github.com/rsalmei/alive-progress) Python library created by [Rogério Sampaio de Almeida (@rsalmei)](https://github.com/rsalmei).
+
+The original Python library is a fantastic piece of work with beautiful animations and thoughtful design. All credit for the core concepts, animation designs, and API patterns goes to the original author.
+
 ## License
 
-MIT
+MIT License - see [LICENSE](LICENSE) for details.
 
-## Credits
-
-This is a TypeScript port of the excellent [alive-progress](https://github.com/rsalmei/alive-progress) Python library by [@rsalmei](https://github.com/rsalmei).
+Both the original Python library and this TypeScript port are MIT licensed.
