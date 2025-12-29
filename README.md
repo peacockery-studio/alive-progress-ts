@@ -259,6 +259,15 @@ console.log('Bars:', listBars());
 console.log('Themes:', listThemes());
 ```
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+
+We use [Conventional Commits](https://www.conventionalcommits.org/) for automatic releases:
+- `fix:` → patch release
+- `feat:` → minor release
+- `feat!:` → major release
+
 ## Acknowledgments
 
 This is a TypeScript port of the excellent [alive-progress](https://github.com/rsalmei/alive-progress) Python library created by [Rogério Sampaio de Almeida (@rsalmei)](https://github.com/rsalmei).
