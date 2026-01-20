@@ -4,7 +4,7 @@ This document provides context for AI agents (Claude, Copilot, Cursor, etc.) wor
 
 ## Project Overview
 
-**alive-progress** is a TypeScript port of the Python [alive-progress](https://github.com/rsalmei/alive-progress) library. It provides animated CLI progress bars with spinners, themes, and ETA calculation.
+* *alive-progress** is a TypeScript port of the Python [alive-progress](https://github.com/rsalmei/alive-progress) library. It provides animated CLI progress bars with spinners, themes, and ETA calculation.
 
 ## Quick Commands
 
@@ -16,11 +16,12 @@ bun run typecheck    # Type check
 bun run lint         # Lint with Ultracite/Biome
 bun run lint:fix     # Auto-fix lint issues
 bun run demo         # Run demo
-```
+
+```text
 
 ## Project Structure
 
-```
+```text
 src/
 ├── index.ts              # Main exports (aliveBar, aliveIt, etc.)
 ├── demo.ts               # Demo script
@@ -39,7 +40,8 @@ src/
     ├── colors.ts         # ANSI color utilities
     ├── timing.ts         # ETA/rate calculation
     └── terminal/         # TTY detection and output
-```
+
+```text
 
 ## Key Concepts
 
@@ -74,7 +76,8 @@ Tests use Bun's built-in test runner:
 bun test                    # Run all tests
 bun test --watch            # Watch mode
 bun test tests/bars.test.ts # Single file
-```
+
+```text
 
 ## Important Files
 

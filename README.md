@@ -17,7 +17,7 @@ This is a TypeScript port of the popular Python [alive-progress](https://github.
 - **Accurate ETA** calculation with exponential smoothing
 - **Auto-iteration** with `aliveIt()` for easy integration
 - **Console interception** that enriches `console.log()` with progress position
-- **40+ built-in spinners** and **15+ bar styles**
+- **40+ built-in spinners**and**15+ bar styles**
 - **Themes** for quick styling
 - **Manual mode** for API-driven progress
 - **Unknown mode** for indeterminate progress
@@ -29,7 +29,8 @@ This is a TypeScript port of the popular Python [alive-progress](https://github.
 
 ```bash
 npm install alive-progress
-```
+
+```text
 
 ## Quick Start
 
@@ -46,7 +47,8 @@ for (let i = 0; i < 100; i++) {
 }
 
 done();  // Finalize and show receipt
-```
+
+```text
 
 ### Auto-Iterating
 
@@ -59,7 +61,8 @@ for await (const item of aliveIt(items)) {
   await processItem(item);
   // Progress automatically increments
 }
-```
+
+```text
 
 ### With Options
 
@@ -80,7 +83,8 @@ for (let i = 0; i < 100; i++) {
 }
 
 done();
-```
+
+```text
 
 ## Configuration Options
 
@@ -106,25 +110,28 @@ done();
 
 ### Spinners
 
-```
+```text
 dots, dots2, dots3, classic, line, bounce, arrows, circle,
 square, triangle, grow, pulse, star, moon, hearts, weather,
 clock, earth, aesthetic, breathing, toggle, arc, pipe, noise,
 shark, and many more...
-```
+
+```text
 
 ### Bars
 
-```
+```text
 smooth, classic, blocks, bubbles, fish, halloween, arrow,
 solid, squares, circles, ascii, fancy, minimal
-```
+
+```text
 
 ### Themes
 
-```
+```text
 smooth, classic, ascii, scuba, musical, halloween, minimal, modern
-```
+
+```text
 
 ## Manual Mode
 
@@ -139,7 +146,8 @@ bar(0.75);  // Jump to 75%
 bar(1.0);   // Complete
 
 done();
-```
+
+```text
 
 ## Unknown Mode
 
@@ -154,7 +162,8 @@ for (const item of items) {
 }
 
 done();
-```
+
+```text
 
 ## Custom Spinners and Bars
 
@@ -166,7 +175,8 @@ import { frameSpinner, aliveBar } from 'alive-progress';
 const mySpinner = frameSpinner(['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘']);
 
 const { bar, done } = aliveBar(100, { spinner: mySpinner });
-```
+
+```text
 
 ### Custom Bar
 
@@ -180,7 +190,8 @@ const myBar = barFactory({
 });
 
 const { bar, done } = aliveBar(100, { bar: myBar });
-```
+
+```text
 
 ## The Bar Handler
 
@@ -208,7 +219,8 @@ resume();                      // Resume
 
 const receipt = done();        // Finalize and get receipt
 console.log(receipt);          // { total, count, elapsed, rate, success, ... }
-```
+
+```text
 
 ## Global Configuration
 
@@ -222,7 +234,8 @@ setGlobalConfig({
   theme: 'modern',
   enrichPrint: true
 });
-```
+
+```text
 
 ## Console Enrichment
 
@@ -239,7 +252,8 @@ for (let i = 0; i < 100; i++) {
 done();
 
 // Output: "on 50: Halfway there!"
-```
+
+```text
 
 ## Demo
 
@@ -247,7 +261,8 @@ Run the built-in demo:
 
 ```bash
 npx alive-progress-demo
-```
+
+```text
 
 Or:
 
@@ -257,7 +272,8 @@ import { listSpinners, listBars, listThemes } from 'alive-progress';
 console.log('Spinners:', listSpinners());
 console.log('Bars:', listBars());
 console.log('Themes:', listThemes());
-```
+
+```text
 
 ## Contributing
 

@@ -6,21 +6,27 @@ Thanks for your interest in contributing!
 
 ```bash
 # Clone the repo
-git clone https://github.com/peacockery-studio/alive-progress-ts.git
+
+git clone [github.com/peacockery-studio](https://github.com/peacockery-studio/alive-progress-ts.git)
 cd alive-progress-ts
 
 # Install dependencies
+
 bun install
 
 # Run tests
+
 bun test
 
 # Build
+
 bun run build
 
 # Run demo
+
 bun run demo
-```
+
+```text
 
 ## Commands
 
@@ -41,11 +47,12 @@ We use [Conventional Commits](https://www.conventionalcommits.org/) for automati
 
 ### Format
 
-```
+```text
 <type>: <description>
 
 [optional body]
-```
+
+```text
 
 ### Types
 
@@ -64,18 +71,23 @@ We use [Conventional Commits](https://www.conventionalcommits.org/) for automati
 
 ```bash
 # Patch release (1.0.0 → 1.0.1)
+
 git commit -m "fix: handle empty arrays correctly"
 
 # Minor release (1.0.0 → 1.1.0)
+
 git commit -m "feat: add new moon spinner"
 
 # Major release (1.0.0 → 2.0.0)
+
 git commit -m "feat!: change aliveBar API signature"
 
 # No release
+
 git commit -m "docs: update README examples"
 git commit -m "chore: update dependencies"
-```
+
+```text
 
 ## Pull Request Process
 
@@ -95,7 +107,7 @@ git commit -m "chore: update dependencies"
 
 ## Project Structure
 
-```
+```text
 src/
 ├── index.ts          # Main exports
 ├── demo.ts           # Demo script
@@ -105,7 +117,8 @@ src/
 └── utils/            # Utilities (cells, colors, timing)
 
 tests/                # Test files (*.test.ts)
-```
+
+```text
 
 ## Attribution
 
